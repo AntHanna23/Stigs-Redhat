@@ -1,11 +1,11 @@
 ###############################################################################
-# How to apply this remediation role:
-# $ sudo ./remediation-role.sh
+# Anthony Hanna(Intern)
+# $ Must be ran as root
 #
 ###############################################################################
 
 ###############################################################################
-# BEGIN fix (1 / 236) for 'no_user_host_based_files'
+# There must be no .shosts files on the system. (V-72277)
 ###############################################################################
 (>&2 echo "Remediating rule 1/236: 'no_user_host_based_files'")
 
@@ -17,10 +17,10 @@ for cur_mount in ${MOUNT_LIST}
 do
 	find ${cur_mount} -xdev -type f -name ".shosts" -exec rm -f {} \;
 done
-# END fix for 'no_user_host_based_files'
+
 
 ###############################################################################
-# BEGIN fix (2 / 236) for 'no_host_based_files'
+# There must be no shosts.equiv files on the system. (V-72279)
 ###############################################################################
 (>&2 echo "Remediating rule 2/236: 'no_host_based_files'")
 
@@ -32,26 +32,26 @@ for cur_mount in ${MOUNT_LIST}
 do
 	find ${cur_mount} -xdev -type f -name "shosts.equiv" -exec rm -f {} \;
 done
-# END fix for 'no_host_based_files'
+
 
 ###############################################################################
-# BEGIN fix (3 / 236) for 'package_rsh-server_removed'
+# The rsh-server package must not be installed. (V-71967)
 ###############################################################################
 (>&2 echo "Remediating rule 3/236: 'package_rsh-server_removed'")
 
 # CAUTION: This remediation script will remove rsh-server
 #	   from the system, and may remove any packages
 #	   that depend on rsh-server. Execute this
-#	   remediation AFTER testing on a non-production
+#	   remediation AFTER testing on a non-productionww
 #	   system!
 
 if rpm -q --quiet "rsh-server" ; then
     yum remove -y "rsh-server"
 fi
-# END fix for 'package_rsh-server_removed'
+
 
 ###############################################################################
-# BEGIN fix (4 / 236) for 'package_telnet-server_removed'
+# The telnet-server package must not be installed. (V-72077)
 ###############################################################################
 (>&2 echo "Remediating rule 4/236: 'package_telnet-server_removed'")
 
@@ -64,10 +64,10 @@ fi
 if rpm -q --quiet "telnet-server" ; then
     yum remove -y "telnet-server"
 fi
-# END fix for 'package_telnet-server_removed'
+
 
 ###############################################################################
-# BEGIN fix (5 / 236) for 'package_ypserv_removed'
+# The ypserv package must not be installed. (V-71969)
 ###############################################################################
 (>&2 echo "Remediating rule 5/236: 'package_ypserv_removed'")
 
@@ -80,17 +80,10 @@ fi
 if rpm -q --quiet "ypserv" ; then
     yum remove -y "ypserv"
 fi
-# END fix for 'package_ypserv_removed'
+
 
 ###############################################################################
-# BEGIN fix (6 / 236) for 'tftpd_uses_secure_mode'
-###############################################################################
-(>&2 echo "Remediating rule 6/236: 'tftpd_uses_secure_mode'")
-(>&2 echo "FIX FOR THIS RULE 'tftpd_uses_secure_mode' IS MISSING!")
-# END fix for 'tftpd_uses_secure_mode'
-
-###############################################################################
-# BEGIN fix (7 / 236) for 'package_tftp-server_removed'
+# The Trivial File Transfer Protocol (TFTP) server package must not be installed if not required for operational support. (V-72301)
 ###############################################################################
 (>&2 echo "Remediating rule 7/236: 'package_tftp-server_removed'")
 
@@ -103,26 +96,10 @@ fi
 if rpm -q --quiet "tftp-server" ; then
     yum remove -y "tftp-server"
 fi
-# END fix for 'package_tftp-server_removed'
+
 
 ###############################################################################
-# BEGIN fix (8 / 236) for 'package_vsftpd_removed'
-###############################################################################
-(>&2 echo "Remediating rule 8/236: 'package_vsftpd_removed'")
-
-# CAUTION: This remediation script will remove vsftpd
-#	   from the system, and may remove any packages
-#	   that depend on vsftpd. Execute this
-#	   remediation AFTER testing on a non-production
-#	   system!
-
-if rpm -q --quiet "vsftpd" ; then
-    yum remove -y "vsftpd"
-fi
-# END fix for 'package_vsftpd_removed'
-
-###############################################################################
-# BEGIN fix (9 / 236) for 'snmpd_not_default_password'
+# SNMP community strings must be changed from the default. (V-72313)
 ###############################################################################
 (>&2 echo "Remediating rule 9/236: 'snmpd_not_default_password'")
 
@@ -132,7 +109,7 @@ fi
 # END fix for 'snmpd_not_default_password'
 
 ###############################################################################
-# BEGIN fix (10 / 236) for 'file_groupowner_cron_allow'
+# If the cron.allow file exists it must be group-owned by root. (V-72055)
 ###############################################################################
 (>&2 echo "Remediating rule 10/236: 'file_groupowner_cron_allow'")
 
@@ -140,7 +117,7 @@ chgrp 0 /etc/cron.allow
 # END fix for 'file_groupowner_cron_allow'
 
 ###############################################################################
-# BEGIN fix (11 / 236) for 'file_owner_cron_allow'
+# If the cron.allow file exists it must be owned by root. (V-72053)
 ###############################################################################
 (>&2 echo "Remediating rule 11/236: 'file_owner_cron_allow'")
 
@@ -148,7 +125,7 @@ chown 0 /etc/cron.allow
 # END fix for 'file_owner_cron_allow'
 
 ###############################################################################
-# BEGIN fix (12 / 236) for 'package_xorg-x11-server-common_removed'
+# An X Windows display manager must not be installed unless approved. (V-72307)
 ###############################################################################
 (>&2 echo "Remediating rule 12/236: 'package_xorg-x11-server-common_removed'")
 
@@ -164,7 +141,7 @@ fi
 # END fix for 'package_xorg-x11-server-common_removed'
 
 ###############################################################################
-# BEGIN fix (13 / 236) for 'postfix_prevent_unrestricted_relay'
+# The system must be configured to prevent unrestricted mail relaying. (V-72297)
 ###############################################################################
 (>&2 echo "Remediating rule 13/236: 'postfix_prevent_unrestricted_relay'")
 
@@ -176,7 +153,7 @@ fi
 # END fix for 'postfix_prevent_unrestricted_relay'
 
 ###############################################################################
-# BEGIN fix (14 / 236) for 'sssd_ldap_configure_tls_ca_dir'
+# The operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications. (V-72231)
 ###############################################################################
 (>&2 echo "Remediating rule 14/236: 'sssd_ldap_configure_tls_ca_dir'")
 
@@ -197,10 +174,10 @@ else
         touch $SSSD_CONF
         echo -e "[domain/default]\nldap_tls_cacertdir = $var_sssd_ldap_tls_ca_dir" >> $SSSD_CONF
 fi
-# END fix for 'sssd_ldap_configure_tls_ca_dir'
+
 
 ###############################################################################
-# BEGIN fix (15 / 236) for 'sssd_ldap_start_tls'
+# The operating system must uniquely identify and must authenticate organizational users (or processes acting on behalf of organizational users) using multifactor authentication. (V-71965)
 ###############################################################################
 (>&2 echo "Remediating rule 15/236: 'sssd_ldap_start_tls'")
 
@@ -229,17 +206,11 @@ else
         touch $SSSD_CONF
         echo -e "[domain/default]\nldap_id_use_start_tls = True" >> $SSSD_CONF
 fi
-# END fix for 'sssd_ldap_start_tls'
+
+
 
 ###############################################################################
-# BEGIN fix (16 / 236) for 'sssd_ldap_configure_tls_ca'
-###############################################################################
-(>&2 echo "Remediating rule 16/236: 'sssd_ldap_configure_tls_ca'")
-(>&2 echo "FIX FOR THIS RULE 'sssd_ldap_configure_tls_ca' IS MISSING!")
-# END fix for 'sssd_ldap_configure_tls_ca'
-
-###############################################################################
-# BEGIN fix (17 / 236) for 'sssd_enable_pam_services'
+# The operating system must implement multifactor authentication for access to privileged accounts via pluggable authentication modules (PAM). (V-72427)
 ###############################################################################
 (>&2 echo "Remediating rule 17/236: 'sssd_enable_pam_services'")
 
@@ -260,7 +231,8 @@ grep -q "$SSSD_SERVICES_PAM_REGEX" $SSSD_CONF || \
 # END fix for 'sssd_enable_pam_services'
 
 ###############################################################################
-# BEGIN fix (18 / 236) for 'chronyd_or_ntpd_set_maxpoll'
+# The operating system must, for networked systems, synchronize clocks with a server that is synchronized to one of the redundant United States Naval Observatory (USNO)
+# time servers, a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS). (V-72269)
 ###############################################################################
 (>&2 echo "Remediating rule 18/236: 'chronyd_or_ntpd_set_maxpoll'")
 
@@ -281,7 +253,7 @@ done
 # END fix for 'chronyd_or_ntpd_set_maxpoll'
 
 ###############################################################################
-# BEGIN fix (19 / 236) for 'service_kdump_disabled'
+# Kernel core dumps must be disabled unless needed. (V-72057)
 ###############################################################################
 (>&2 echo "Remediating rule 19/236: 'service_kdump_disabled'")
 
@@ -303,7 +275,7 @@ fi
 # END fix for 'service_kdump_disabled'
 
 ###############################################################################
-# BEGIN fix (20 / 236) for 'sshd_enable_strictmodes'
+# The SSH daemon must perform strict mode checking of home directory configuration files. (V-72263)
 ###############################################################################
 (>&2 echo "Remediating rule 20/236: 'sshd_enable_strictmodes'")
 if [ -e "/etc/ssh/sshd_config" ] ; then
@@ -328,7 +300,7 @@ rm "/etc/ssh/sshd_config.bak"
 # END fix for 'sshd_enable_strictmodes'
 
 ###############################################################################
-# BEGIN fix (21 / 236) for 'sshd_disable_empty_passwords'
+# The SSH daemon must not allow authentication using an empty password. (V-71939)
 ###############################################################################
 (>&2 echo "Remediating rule 21/236: 'sshd_disable_empty_passwords'")
 if [ -e "/etc/ssh/sshd_config" ] ; then
@@ -353,7 +325,8 @@ rm "/etc/ssh/sshd_config.bak"
 # END fix for 'sshd_disable_empty_passwords'
 
 ###############################################################################
-# BEGIN fix (22 / 236) for 'sshd_set_keepalive'
+# All network connections associated with SSH traffic must terminate at the end of the session or after 10 minutes of inactivity,
+# except to fulfill documented and validated mission requirements. (V-72237)
 ###############################################################################
 (>&2 echo "Remediating rule 22/236: 'sshd_set_keepalive'")
 
@@ -439,7 +412,7 @@ replace_or_append '/etc/ssh/sshd_config' '^ClientAliveCountMax' "$var_sshd_set_k
 # END fix for 'sshd_set_keepalive'
 
 ###############################################################################
-# BEGIN fix (23 / 236) for 'sshd_set_idle_timeout'
+# The operating system must set the session idle delay setting for all connection types. (V-73157)
 ###############################################################################
 (>&2 echo "Remediating rule 23/236: 'sshd_set_idle_timeout'")
 
@@ -525,7 +498,7 @@ replace_or_append '/etc/ssh/sshd_config' '^ClientAliveInterval' $sshd_idle_timeo
 # END fix for 'sshd_set_idle_timeout'
 
 ###############################################################################
-# BEGIN fix (24 / 236) for 'sshd_enable_warning_banner'
+# The Standard Mandatory DoD Notice and Consent Banner must be displayed immediately prior to, or as part of, remote access logon prompts. (V-72225)
 ###############################################################################
 (>&2 echo "Remediating rule 24/236: 'sshd_enable_warning_banner'")
 if [ -e "/etc/ssh/sshd_config" ] ; then
@@ -547,10 +520,10 @@ else
 fi
 # Clean up after ourselves.
 rm "/etc/ssh/sshd_config.bak"
-# END fix for 'sshd_enable_warning_banner'
+
 
 ###############################################################################
-# BEGIN fix (25 / 236) for 'sshd_use_approved_macs'
+# The SSH daemon must be configured to only use Message Authentication Codes (MACs) employing FIPS 140-2 approved cryptographic hash algorithms. (V-72253)
 ###############################################################################
 (>&2 echo "Remediating rule 25/236: 'sshd_use_approved_macs'")
 
@@ -636,7 +609,7 @@ replace_or_append '/etc/ssh/sshd_config' '^MACs' "$sshd_approved_macs" 'CCE-2745
 # END fix for 'sshd_use_approved_macs'
 
 ###############################################################################
-# BEGIN fix (26 / 236) for 'sshd_do_not_permit_user_env'
+# The operating system must not allow users to override SSH environment variables. (V-71957)
 ###############################################################################
 (>&2 echo "Remediating rule 26/236: 'sshd_do_not_permit_user_env'")
 if [ -e "/etc/ssh/sshd_config" ] ; then
@@ -661,7 +634,7 @@ rm "/etc/ssh/sshd_config.bak"
 # END fix for 'sshd_do_not_permit_user_env'
 
 ###############################################################################
-# BEGIN fix (27 / 236) for 'sshd_disable_kerb_auth'
+# The SSH daemon must not permit Kerberos authentication unless needed. (V-72261)
 ###############################################################################
 (>&2 echo "Remediating rule 27/236: 'sshd_disable_kerb_auth'")
 if [ -e "/etc/ssh/sshd_config" ] ; then
@@ -686,7 +659,7 @@ rm "/etc/ssh/sshd_config.bak"
 # END fix for 'sshd_disable_kerb_auth'
 
 ###############################################################################
-# BEGIN fix (28 / 236) for 'sshd_allow_only_protocol2'
+# The SSH daemon must be configured to only use the SSHv2 protocol. (V-72251)
 ###############################################################################
 (>&2 echo "Remediating rule 28/236: 'sshd_allow_only_protocol2'")
 if [ -e "/etc/ssh/sshd_config" ] ; then
@@ -711,7 +684,7 @@ rm "/etc/ssh/sshd_config.bak"
 # END fix for 'sshd_allow_only_protocol2'
 
 ###############################################################################
-# BEGIN fix (29 / 236) for 'sshd_disable_rhosts_rsa'
+# The SSH daemon must not allow authentication using RSA rhosts authentication. (V-72239)
 ###############################################################################
 (>&2 echo "Remediating rule 29/236: 'sshd_disable_rhosts_rsa'")
 # Function to replace configuration setting in config file or add the configuration setting if
@@ -795,7 +768,7 @@ replace_or_append '/etc/ssh/sshd_config' '^RhostsRSAAuthentication' 'no' 'CCE-80
 # END fix for 'sshd_disable_rhosts_rsa'
 
 ###############################################################################
-# BEGIN fix (30 / 236) for 'sshd_enable_x11_forwarding'
+# An X Windows display manager must not be installed unless approved. (V-72307)
 ###############################################################################
 (>&2 echo "Remediating rule 30/236: 'sshd_enable_x11_forwarding'")
 if [ -e "/etc/ssh/sshd_config" ] ; then
@@ -820,7 +793,7 @@ rm "/etc/ssh/sshd_config.bak"
 # END fix for 'sshd_enable_x11_forwarding'
 
 ###############################################################################
-# BEGIN fix (31 / 236) for 'sshd_use_approved_ciphers'
+# A FIPS 140-2 approved cryptographic algorithm must be used for SSH communications. (V-72221)
 ###############################################################################
 (>&2 echo "Remediating rule 31/236: 'sshd_use_approved_ciphers'")
 # Function to replace configuration setting in config file or add the configuration setting if
@@ -904,7 +877,7 @@ replace_or_append '/etc/ssh/sshd_config' '^Ciphers' 'aes128-ctr,aes192-ctr,aes25
 # END fix for 'sshd_use_approved_ciphers'
 
 ###############################################################################
-# BEGIN fix (32 / 236) for 'disable_host_auth'
+# The operating system must not allow a non-certificate trusted host SSH logon to the system. (V-71959)
 ###############################################################################
 (>&2 echo "Remediating rule 32/236: 'disable_host_auth'")
 if [ -e "/etc/ssh/sshd_config" ] ; then
@@ -929,7 +902,7 @@ rm "/etc/ssh/sshd_config.bak"
 # END fix for 'disable_host_auth'
 
 ###############################################################################
-# BEGIN fix (33 / 236) for 'sshd_use_priv_separation'
+# The SSH daemon must use privilege separation. (V-72265)
 ###############################################################################
 (>&2 echo "Remediating rule 33/236: 'sshd_use_priv_separation'")
 
@@ -957,7 +930,7 @@ rm "/etc/ssh/sshd_config.bak"
 # END fix for 'sshd_use_priv_separation'
 
 ###############################################################################
-# BEGIN fix (34 / 236) for 'sshd_print_last_log'
+# The system must display the date and time of the last successful account logon upon an SSH logon. (V-72245)
 ###############################################################################
 (>&2 echo "Remediating rule 34/236: 'sshd_print_last_log'")
 if [ -e "/etc/ssh/sshd_config" ] ; then
@@ -982,7 +955,7 @@ rm "/etc/ssh/sshd_config.bak"
 # END fix for 'sshd_print_last_log'
 
 ###############################################################################
-# BEGIN fix (35 / 236) for 'sshd_disable_gssapi_auth'
+# The SSH daemon must not permit Generic Security Service Application Program Interface (GSSAPI) authentication unless needed. (V-72259)
 ###############################################################################
 (>&2 echo "Remediating rule 35/236: 'sshd_disable_gssapi_auth'")
 if [ -e "/etc/ssh/sshd_config" ] ; then
@@ -1007,7 +980,7 @@ rm "/etc/ssh/sshd_config.bak"
 # END fix for 'sshd_disable_gssapi_auth'
 
 ###############################################################################
-# BEGIN fix (36 / 236) for 'sshd_disable_compression'
+# The SSH daemon must not allow compression or must only allow compression after successful authentication. (V-72267)
 ###############################################################################
 (>&2 echo "Remediating rule 36/236: 'sshd_disable_compression'")
 
@@ -1093,7 +1066,7 @@ replace_or_append '/etc/ssh/sshd_config' '^Compression' "$var_sshd_disable_compr
 # END fix for 'sshd_disable_compression'
 
 ###############################################################################
-# BEGIN fix (37 / 236) for 'sshd_disable_root_login'
+# The system must not permit direct logons to the root account using remote access via SSH
 ###############################################################################
 (>&2 echo "Remediating rule 37/236: 'sshd_disable_root_login'")
 if [ -e "/etc/ssh/sshd_config" ] ; then
@@ -1118,7 +1091,7 @@ rm "/etc/ssh/sshd_config.bak"
 # END fix for 'sshd_disable_root_login'
 
 ###############################################################################
-# BEGIN fix (38 / 236) for 'package_openssh-server_installed'
+# All networked systems must have SSH installed. (V-72233)
 ###############################################################################
 (>&2 echo "Remediating rule 38/236: 'package_openssh-server_installed'")
 
@@ -1128,7 +1101,7 @@ fi
 # END fix for 'package_openssh-server_installed'
 
 ###############################################################################
-# BEGIN fix (39 / 236) for 'service_sshd_enabled'
+# All networked systems must use SSH for confidentiality and integrity of transmitted and received information as well as information during preparation for transmission. (V-72235)
 ###############################################################################
 (>&2 echo "Remediating rule 39/236: 'service_sshd_enabled'")
 
@@ -1138,21 +1111,21 @@ SYSTEMCTL_EXEC='/usr/bin/systemctl'
 # END fix for 'service_sshd_enabled'
 
 ###############################################################################
-# BEGIN fix (40 / 236) for 'file_permissions_sshd_pub_key'
+# The SSH public host key files must have mode 0644 or less permissive. (V-72255)
 ###############################################################################
 (>&2 echo "Remediating rule 40/236: 'file_permissions_sshd_pub_key'")
 find /etc/ssh -regex '^/etc/ssh/.*.pub$' -exec chmod 0644 {} \;
 # END fix for 'file_permissions_sshd_pub_key'
 
 ###############################################################################
-# BEGIN fix (41 / 236) for 'file_permissions_sshd_private_key'
+# The SSH private host key files must have mode 0600 or less permissive. (V-72257)
 ###############################################################################
 (>&2 echo "Remediating rule 41/236: 'file_permissions_sshd_private_key'")
-find /etc/ssh -regex '^/etc/ssh/.*_key$' -exec chmod 0640 {} \;
+find /etc/ssh -regex '^/etc/ssh/.*_key$' -exec chmod 0600 {} \;
 # END fix for 'file_permissions_sshd_private_key'
 
 ###############################################################################
-# BEGIN fix (42 / 236) for 'mount_option_krb_sec_remote_filesystems'
+# The Network File System (NFS) must be configured to use RPCSEC_GSS. (V-72311)
 ###############################################################################
 (>&2 echo "Remediating rule 42/236: 'mount_option_krb_sec_remote_filesystems'")
 function include_mount_options_functions {
@@ -1233,7 +1206,7 @@ ensure_mount_option_for_vfstype "nfs[4]?" "sec=krb5:krb5i:krb5p"
 # END fix for 'mount_option_krb_sec_remote_filesystems'
 
 ###############################################################################
-# BEGIN fix (43 / 236) for 'mount_option_noexec_remote_filesystems'
+# File systems that are being imported via Network File System (NFS) must be mounted to prevent files with the setuid and setgid bit set from being executed. (V-72045)
 ###############################################################################
 (>&2 echo "Remediating rule 43/236: 'mount_option_noexec_remote_filesystems'")
 function include_mount_options_functions {
@@ -1314,7 +1287,7 @@ ensure_mount_option_for_vfstype "nfs[4]?" "noexec" "" "nfs4"
 # END fix for 'mount_option_noexec_remote_filesystems'
 
 ###############################################################################
-# BEGIN fix (44 / 236) for 'mount_option_nosuid_remote_filesystems'
+# File systems that contain user home directories must be mounted to prevent files with the setuid and setgid bit set from being executed. (V-72041)
 ###############################################################################
 (>&2 echo "Remediating rule 44/236: 'mount_option_nosuid_remote_filesystems'")
 function include_mount_options_functions {
@@ -1395,7 +1368,7 @@ ensure_mount_option_for_vfstype "nfs[4]?" "nosuid" "" "nfs4"
 # END fix for 'mount_option_nosuid_remote_filesystems'
 
 ###############################################################################
-# BEGIN fix (45 / 236) for 'dconf_gnome_session_idle_user_locks'
+# The Red Hat Enterprise Linux operating system must enable a user session lock until that user re-establishes access using established identification and authentication procedures.
 ###############################################################################
 (>&2 echo "Remediating rule 45/236: 'dconf_gnome_session_idle_user_locks'")
 function include_dconf_settings {
@@ -1482,7 +1455,7 @@ dconf_lock 'org/gnome/desktop/session' 'idle-delay' 'local.d' '00-security-setti
 # END fix for 'dconf_gnome_session_idle_user_locks'
 
 ###############################################################################
-# BEGIN fix (46 / 236) for 'dconf_gnome_screensaver_lock_delay'
+#  The Red Hat Enterprise Linux operating system must initiate a screensaver after a 15-minute period of inactivity for graphical user interfaces.
 ###############################################################################
 (>&2 echo "Remediating rule 46/236: 'dconf_gnome_screensaver_lock_delay'")
 
@@ -1572,7 +1545,7 @@ dconf_lock 'org/gnome/desktop/screensaver' 'lock-delay' 'local.d' '00-security-s
 # END fix for 'dconf_gnome_screensaver_lock_delay'
 
 ###############################################################################
-# BEGIN fix (47 / 236) for 'dconf_gnome_screensaver_user_locks'
+# The Red Hat Enterprise Linux operating system must initiate a session lock for the screensaver after a period of inactivity for graphical user interfaces.
 ###############################################################################
 (>&2 echo "Remediating rule 47/236: 'dconf_gnome_screensaver_user_locks'")
 function include_dconf_settings {
@@ -1659,7 +1632,7 @@ dconf_lock 'org/gnome/desktop/screensaver' 'lock-delay' 'local.d' '00-security-s
 # END fix for 'dconf_gnome_screensaver_user_locks'
 
 ###############################################################################
-# BEGIN fix (48 / 236) for 'dconf_gnome_screensaver_idle_activation_enabled'
+# The operating system must initiate a screensaver after a 15-minute period of inactivity for graphical user interfaces. (V-71893)
 ###############################################################################
 (>&2 echo "Remediating rule 48/236: 'dconf_gnome_screensaver_idle_activation_enabled'")
 function include_dconf_settings {
@@ -1747,7 +1720,7 @@ dconf_lock 'org/gnome/desktop/screensaver' 'idle-activation-enabled' 'local.d' '
 # END fix for 'dconf_gnome_screensaver_idle_activation_enabled'
 
 ###############################################################################
-# BEGIN fix (49 / 236) for 'dconf_gnome_screensaver_idle_delay'
+# The operating system must set the idle delay setting for all connection types. (V-71895)
 ###############################################################################
 (>&2 echo "Remediating rule 49/236: 'dconf_gnome_screensaver_idle_delay'")
 
@@ -2187,7 +2160,7 @@ dconf_lock 'org/gnome/login-screen' 'enable-smartcard-authentication' 'gdm.d' '0
 # END fix for 'dconf_gnome_enable_smartcard_auth'
 
 ###############################################################################
-# BEGIN fix (54 / 236) for 'gnome_gdm_disable_automatic_login'
+# The operating system must not allow an unattended or automatic logon to the system via a graphical user interface. (V-71953)
 ###############################################################################
 (>&2 echo "Remediating rule 54/236: 'gnome_gdm_disable_automatic_login'")
 
@@ -2218,39 +2191,16 @@ then
 		sed -i "s/^TimedLoginEnable=.*/TimedLoginEnable=False/g" /etc/gdm/custom.conf
 	fi
 fi
-# END fix for 'gnome_gdm_disable_guest_login'
 
-###############################################################################
-# BEGIN fix (56 / 236) for 'dconf_db_up_to_date'
-###############################################################################
+
 (>&2 echo "Remediating rule 56/236: 'dconf_db_up_to_date'")
 
 dconf update
-# END fix for 'dconf_db_up_to_date'
+
+
 
 ###############################################################################
-# BEGIN fix (57 / 236) for 'sudo_remove_no_authenticate'
-###############################################################################
-(>&2 echo "Remediating rule 57/236: 'sudo_remove_no_authenticate'")
-(>&2 echo "FIX FOR THIS RULE 'sudo_remove_no_authenticate' IS MISSING!")
-# END fix for 'sudo_remove_no_authenticate'
-
-###############################################################################
-# BEGIN fix (58 / 236) for 'sudo_remove_nopasswd'
-###############################################################################
-(>&2 echo "Remediating rule 58/236: 'sudo_remove_nopasswd'")
-(>&2 echo "FIX FOR THIS RULE 'sudo_remove_nopasswd' IS MISSING!")
-# END fix for 'sudo_remove_nopasswd'
-
-###############################################################################
-# BEGIN fix (59 / 236) for 'installed_OS_is_vendor_supported'
-###############################################################################
-(>&2 echo "Remediating rule 59/236: 'installed_OS_is_vendor_supported'")
-(>&2 echo "FIX FOR THIS RULE 'installed_OS_is_vendor_supported' IS MISSING!")
-# END fix for 'installed_OS_is_vendor_supported'
-
-###############################################################################
-# BEGIN fix (60 / 236) for 'grub2_enable_fips_mode'
+# BEGIN fix Systems using Unified Extensible Firmware Interface (UEFI) must require authentication upon booting into single-user and maintenance modes. (V-71963)
 ###############################################################################
 (>&2 echo "Remediating rule 60/236: 'grub2_enable_fips_mode'")
 
@@ -2306,15 +2256,9 @@ fi
 /sbin/grubby --update-kernel=ALL --args="fips=1 boot=UUID=${BOOT_UUID}"
 # END fix for 'grub2_enable_fips_mode'
 
-###############################################################################
-# BEGIN fix (61 / 236) for 'install_antivirus'
-###############################################################################
-(>&2 echo "Remediating rule 61/236: 'install_antivirus'")
-(>&2 echo "FIX FOR THIS RULE 'install_antivirus' IS MISSING!")
-# END fix for 'install_antivirus'
 
 ###############################################################################
-# BEGIN fix (62 / 236) for 'rpm_verify_permissions'
+# The file permissions, ownership, and group membership of system files and commands must match the vendor values. (V-71849)
 ###############################################################################
 (>&2 echo "Remediating rule 62/236: 'rpm_verify_permissions'")
 
@@ -2341,7 +2285,7 @@ done
 # END fix for 'rpm_verify_permissions'
 
 ###############################################################################
-# BEGIN fix (63 / 236) for 'rpm_verify_ownership'
+# The file permissions, ownership, and group membership of system files and commands must match the vendor values. (V-71849)
 ###############################################################################
 (>&2 echo "Remediating rule 63/236: 'rpm_verify_ownership'")
 
@@ -2365,10 +2309,9 @@ for RPM_PACKAGE in "${!SETPERMS_RPM_DICT[@]}"
 do
         rpm --setugids "${RPM_PACKAGE}"
 done
-# END fix for 'rpm_verify_ownership'
 
 ###############################################################################
-# BEGIN fix (64 / 236) for 'rpm_verify_hashes'
+# The cryptographic hash of system files and commands must match vendor values. (V-71855)
 ###############################################################################
 (>&2 echo "Remediating rule 64/236: 'rpm_verify_hashes'")
 
@@ -2381,7 +2324,7 @@ yum reinstall -y $packages_to_reinstall
 # END fix for 'rpm_verify_hashes'
 
 ###############################################################################
-# BEGIN fix (65 / 236) for 'package_aide_installed'
+# A file integrity tool must verify the baseline operating system configuration at least weekly. (V-71973)
 ###############################################################################
 (>&2 echo "Remediating rule 65/236: 'package_aide_installed'")
 
@@ -2391,7 +2334,7 @@ fi
 # END fix for 'package_aide_installed'
 
 ###############################################################################
-# BEGIN fix (66 / 236) for 'aide_verify_ext_attributes'
+# Designated personnel must be notified if baseline configurations are changed in an unauthorized manner. (V-71975)
 ###############################################################################
 (>&2 echo "Remediating rule 66/236: 'aide_verify_ext_attributes'")
 
@@ -2421,7 +2364,7 @@ done
 # END fix for 'aide_verify_ext_attributes'
 
 ###############################################################################
-# BEGIN fix (67 / 236) for 'aide_verify_acls'
+# The file integrity tool must be configured to verify Access Control Lists (ACLs). (V-72069)
 ###############################################################################
 (>&2 echo "Remediating rule 67/236: 'aide_verify_acls'")
 
@@ -2451,7 +2394,7 @@ done
 # END fix for 'aide_verify_acls'
 
 ###############################################################################
-# BEGIN fix (68 / 236) for 'aide_use_fips_hashes'
+# The file integrity tool must use FIPS 140-2 approved cryptographic hashes for validating file contents and directories. (V-72073)
 ###############################################################################
 (>&2 echo "Remediating rule 68/236: 'aide_use_fips_hashes'")
 
@@ -2460,7 +2403,8 @@ if ! rpm -q --quiet "aide" ; then
 fi
 
 aide_conf="/etc/aide.conf"
-forbidden_hashes=(sha1 rmd160 sha256 whirlpool tiger haval gost crc32)
+forbidden_hashes=(sha1 rmd160 
+whirlpool tiger haval gost crc32)
 
 groups=$(LC_ALL=C grep "^[A-Z]\+" $aide_conf | cut -f1 -d ' ' | tr -d ' ' | sort -u)
 
@@ -2487,7 +2431,7 @@ done
 # END fix for 'aide_use_fips_hashes'
 
 ###############################################################################
-# BEGIN fix (69 / 236) for 'aide_scan_notification'
+# A file integrity tool must verify the baseline operating system configuration at least weekly. (V-71973)
 ###############################################################################
 (>&2 echo "Remediating rule 69/236: 'aide_scan_notification'")
 
@@ -2508,7 +2452,7 @@ fi
 # END fix for 'aide_scan_notification'
 
 ###############################################################################
-# BEGIN fix (70 / 236) for 'aide_periodic_cron_checking'
+# Designated personnel must be notified if baseline configurations are changed in an unauthorized manner. (V-71975)
 ###############################################################################
 (>&2 echo "Remediating rule 70/236: 'aide_periodic_cron_checking'")
 
@@ -2532,7 +2476,7 @@ yum -y update
 # END fix for 'security_patches_up_to_date'
 
 ###############################################################################
-# BEGIN fix (72 / 236) for 'clean_components_post_updating'
+# Vendor packaged system security patches and updates must be installed and up to date. (V-71999)
 ###############################################################################
 (>&2 echo "Remediating rule 72/236: 'clean_components_post_updating'")
 
@@ -2545,7 +2489,7 @@ fi
 # END fix for 'clean_components_post_updating'
 
 ###############################################################################
-# BEGIN fix (73 / 236) for 'ensure_gpgcheck_globally_activated'
+# The operating system must prevent the installation of software, patches, service packs, device drivers, or operating system components of local packages without verification they have been digitally signed using a certificate that is issued by a Certificate Authority (CA) that is recognized and approved by the organization. (V-71979)
 ###############################################################################
 (>&2 echo "Remediating rule 73/236: 'ensure_gpgcheck_globally_activated'")
 # Function to replace configuration setting in config file or add the configuration setting if
@@ -2629,7 +2573,7 @@ replace_or_append "/etc/yum.conf" '^gpgcheck' '1' 'CCE-26989-4'
 # END fix for 'ensure_gpgcheck_globally_activated'
 
 ###############################################################################
-# BEGIN fix (74 / 236) for 'ensure_gpgcheck_local_packages'
+# Rule Title: The Red Hat Enterprise Linux operating system must prevent the installation of software, patches, service packs, device drivers, or operating system components of local packages without verification they have been digitally signed using a certificate that is issued by a Certificate Authority (CA) that is recognized and approved by the organization.
 ###############################################################################
 (>&2 echo "Remediating rule 74/236: 'ensure_gpgcheck_local_packages'")
 # Function to replace configuration setting in config file or add the configuration setting if
@@ -2712,36 +2656,9 @@ function replace_or_append {
 replace_or_append '/etc/yum.conf' '^localpkg_gpgcheck' '1' 'CCE-80347-8'
 # END fix for 'ensure_gpgcheck_local_packages'
 
-###############################################################################
-# BEGIN fix (75 / 236) for 'partition_for_home'
-###############################################################################
-(>&2 echo "Remediating rule 75/236: 'partition_for_home'")
-(>&2 echo "FIX FOR THIS RULE 'partition_for_home' IS MISSING!")
-# END fix for 'partition_for_home'
 
 ###############################################################################
-# BEGIN fix (76 / 236) for 'partition_for_tmp'
-###############################################################################
-(>&2 echo "Remediating rule 76/236: 'partition_for_tmp'")
-(>&2 echo "FIX FOR THIS RULE 'partition_for_tmp' IS MISSING!")
-# END fix for 'partition_for_tmp'
-
-###############################################################################
-# BEGIN fix (77 / 236) for 'partition_for_var'
-###############################################################################
-(>&2 echo "Remediating rule 77/236: 'partition_for_var'")
-(>&2 echo "FIX FOR THIS RULE 'partition_for_var' IS MISSING!")
-# END fix for 'partition_for_var'
-
-###############################################################################
-# BEGIN fix (78 / 236) for 'partition_for_var_log_audit'
-###############################################################################
-(>&2 echo "Remediating rule 78/236: 'partition_for_var_log_audit'")
-(>&2 echo "FIX FOR THIS RULE 'partition_for_var_log_audit' IS MISSING!")
-# END fix for 'partition_for_var_log_audit'
-
-###############################################################################
-# BEGIN fix (79 / 236) for 'rsyslog_remote_loghost'
+# The system must send rsyslog output to a log aggregation server. (V-72209)
 ###############################################################################
 (>&2 echo "Remediating rule 79/236: 'rsyslog_remote_loghost'")
 
@@ -2827,7 +2744,7 @@ replace_or_append '/etc/rsyslog.conf' '^\*\.\*' "@@$rsyslog_remote_loghost_addre
 # END fix for 'rsyslog_remote_loghost'
 
 ###############################################################################
-# BEGIN fix (80 / 236) for 'rsyslog_cron_logging'
+# Cron logging must be implemented. (V-72051)
 ###############################################################################
 (>&2 echo "Remediating rule 80/236: 'rsyslog_cron_logging'")
 
@@ -2837,22 +2754,9 @@ if ! grep -s "^\s*cron\.\*\s*/var/log/cron$" /etc/rsyslog.conf /etc/rsyslog.d/*.
 fi
 # END fix for 'rsyslog_cron_logging'
 
-###############################################################################
-# BEGIN fix (81 / 236) for 'rsyslog_nolisten'
-###############################################################################
-(>&2 echo "Remediating rule 81/236: 'rsyslog_nolisten'")
-(>&2 echo "FIX FOR THIS RULE 'rsyslog_nolisten' IS MISSING!")
-# END fix for 'rsyslog_nolisten'
 
 ###############################################################################
-# BEGIN fix (82 / 236) for 'set_firewalld_default_zone'
-###############################################################################
-(>&2 echo "Remediating rule 82/236: 'set_firewalld_default_zone'")
-(>&2 echo "FIX FOR THIS RULE 'set_firewalld_default_zone' IS MISSING!")
-# END fix for 'set_firewalld_default_zone'
-
-###############################################################################
-# BEGIN fix (83 / 236) for 'configure_firewalld_ports'
+# The host must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the Ports, Protocols, and Services Management Component Local Service Assessment (PPSM CLSA) and vulnerability assessments. (V-72219)
 ###############################################################################
 (>&2 echo "Remediating rule 83/236: 'configure_firewalld_ports'")
 
@@ -2981,7 +2885,7 @@ fi
 # END fix for 'configure_firewalld_rate_limiting'
 
 ###############################################################################
-# BEGIN fix (85 / 236) for 'service_firewalld_enabled'
+# The operating system must protect against or limit the effects of Denial of Service (DoS) attacks by validating the operating system is implementing rate-limiting measures on impacted network interfaces. (V-72271)
 ###############################################################################
 (>&2 echo "Remediating rule 85/236: 'service_firewalld_enabled'")
 
@@ -2990,15 +2894,9 @@ SYSTEMCTL_EXEC='/usr/bin/systemctl'
 "$SYSTEMCTL_EXEC" enable 'firewalld.service'
 # END fix for 'service_firewalld_enabled'
 
-###############################################################################
-# BEGIN fix (86 / 236) for 'libreswan_approved_tunnels'
-###############################################################################
-(>&2 echo "Remediating rule 86/236: 'libreswan_approved_tunnels'")
-(>&2 echo "FIX FOR THIS RULE 'libreswan_approved_tunnels' IS MISSING!")
-# END fix for 'libreswan_approved_tunnels'
 
 ###############################################################################
-# BEGIN fix (87 / 236) for 'sysctl_net_ipv6_conf_all_accept_source_route'
+# The system must not forward IPv6 source-routed packets. (V-72319)
 ###############################################################################
 (>&2 echo "Remediating rule 87/236: 'sysctl_net_ipv6_conf_all_accept_source_route'")
 
@@ -3094,7 +2992,7 @@ replace_or_append '/etc/sysctl.conf' '^net.ipv6.conf.all.accept_source_route' "$
 # END fix for 'sysctl_net_ipv6_conf_all_accept_source_route'
 
 ###############################################################################
-# BEGIN fix (88 / 236) for 'sysctl_net_ipv4_conf_default_accept_source_route'
+# The system must not forward Internet Protocol version 4 (IPv4) source-routed packets. (V-72283)
 ###############################################################################
 (>&2 echo "Remediating rule 88/236: 'sysctl_net_ipv4_conf_default_accept_source_route'")
 
@@ -3190,7 +3088,7 @@ replace_or_append '/etc/sysctl.conf' '^net.ipv4.conf.default.accept_source_route
 # END fix for 'sysctl_net_ipv4_conf_default_accept_source_route'
 
 ###############################################################################
-# BEGIN fix (89 / 236) for 'sysctl_net_ipv4_icmp_echo_ignore_broadcasts'
+# The system must not respond to Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) echoes sent to a broadcast address. (V-72287)
 ###############################################################################
 (>&2 echo "Remediating rule 89/236: 'sysctl_net_ipv4_icmp_echo_ignore_broadcasts'")
 
@@ -3286,7 +3184,7 @@ replace_or_append '/etc/sysctl.conf' '^net.ipv4.icmp_echo_ignore_broadcasts' "$s
 # END fix for 'sysctl_net_ipv4_icmp_echo_ignore_broadcasts'
 
 ###############################################################################
-# BEGIN fix (90 / 236) for 'sysctl_net_ipv4_conf_all_accept_redirects'
+# The system must prevent Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages from being accepted. (V-72289)
 ###############################################################################
 (>&2 echo "Remediating rule 90/236: 'sysctl_net_ipv4_conf_all_accept_redirects'")
 
@@ -3382,7 +3280,7 @@ replace_or_append '/etc/sysctl.conf' '^net.ipv4.conf.all.accept_redirects' "$sys
 # END fix for 'sysctl_net_ipv4_conf_all_accept_redirects'
 
 ###############################################################################
-# BEGIN fix (91 / 236) for 'sysctl_net_ipv4_conf_all_accept_source_route'
+# The system must not forward IPv4 source-routed packets. (V-72319)
 ###############################################################################
 (>&2 echo "Remediating rule 91/236: 'sysctl_net_ipv4_conf_all_accept_source_route'")
 
@@ -3478,7 +3376,7 @@ replace_or_append '/etc/sysctl.conf' '^net.ipv4.conf.all.accept_source_route' "$
 # END fix for 'sysctl_net_ipv4_conf_all_accept_source_route'
 
 ###############################################################################
-# BEGIN fix (92 / 236) for 'sysctl_net_ipv4_conf_default_accept_redirects'
+# The system must not forward IPv6 source-routed packets. (V-72319
 ###############################################################################
 (>&2 echo "Remediating rule 92/236: 'sysctl_net_ipv4_conf_default_accept_redirects'")
 
@@ -3574,7 +3472,7 @@ replace_or_append '/etc/sysctl.conf' '^net.ipv4.conf.default.accept_redirects' "
 # END fix for 'sysctl_net_ipv4_conf_default_accept_redirects'
 
 ###############################################################################
-# BEGIN fix (93 / 236) for 'sysctl_net_ipv4_ip_forward'
+# The system must not forward Internet Protocol version 4 (IPv4) source-routed packets. (V-72283)
 ###############################################################################
 (>&2 echo "Remediating rule 93/236: 'sysctl_net_ipv4_ip_forward'")
 
@@ -3669,7 +3567,7 @@ replace_or_append '/etc/sysctl.conf' '^net.ipv4.ip_forward' "0" 'CCE-80157-1'
 # END fix for 'sysctl_net_ipv4_ip_forward'
 
 ###############################################################################
-# BEGIN fix (94 / 236) for 'sysctl_net_ipv4_conf_all_send_redirects'
+# The system must not forward Internet Protocol version 4 (IPv4) source-routed packets. (V-72283)
 ###############################################################################
 (>&2 echo "Remediating rule 94/236: 'sysctl_net_ipv4_conf_all_send_redirects'")
 
@@ -3764,7 +3662,7 @@ replace_or_append '/etc/sysctl.conf' '^net.ipv4.conf.all.send_redirects' "0" 'CC
 # END fix for 'sysctl_net_ipv4_conf_all_send_redirects'
 
 ###############################################################################
-# BEGIN fix (95 / 236) for 'sysctl_net_ipv4_conf_default_send_redirects'
+# The system must not forward Internet Protocol version 4 (IPv4) source-routed packets. (V-72283)
 ###############################################################################
 (>&2 echo "Remediating rule 95/236: 'sysctl_net_ipv4_conf_default_send_redirects'")
 
@@ -3859,7 +3757,7 @@ replace_or_append '/etc/sysctl.conf' '^net.ipv4.conf.default.send_redirects' "0"
 # END fix for 'sysctl_net_ipv4_conf_default_send_redirects'
 
 ###############################################################################
-# BEGIN fix (96 / 236) for 'kernel_module_dccp_disabled'
+# The Datagram Congestion Control Protocol (DCCP) kernel module must be disabled unless required. (V-77821)
 ###############################################################################
 (>&2 echo "Remediating rule 96/236: 'kernel_module_dccp_disabled'")
 if LC_ALL=C grep -q -m 1 "^install dccp" /etc/modprobe.d/dccp.conf ; then
@@ -3870,50 +3768,12 @@ else
 fi
 # END fix for 'kernel_module_dccp_disabled'
 
-###############################################################################
-# BEGIN fix (97 / 236) for 'wireless_disable_interfaces'
-###############################################################################
-(>&2 echo "Remediating rule 97/236: 'wireless_disable_interfaces'")
-(>&2 echo "FIX FOR THIS RULE 'wireless_disable_interfaces' IS MISSING!")
-# END fix for 'wireless_disable_interfaces'
+
+
+
 
 ###############################################################################
-# BEGIN fix (98 / 236) for 'network_configure_name_resolution'
-###############################################################################
-(>&2 echo "Remediating rule 98/236: 'network_configure_name_resolution'")
-(>&2 echo "FIX FOR THIS RULE 'network_configure_name_resolution' IS MISSING!")
-# END fix for 'network_configure_name_resolution'
-
-###############################################################################
-# BEGIN fix (99 / 236) for 'network_sniffer_disabled'
-###############################################################################
-(>&2 echo "Remediating rule 99/236: 'network_sniffer_disabled'")
-(>&2 echo "FIX FOR THIS RULE 'network_sniffer_disabled' IS MISSING!")
-# END fix for 'network_sniffer_disabled'
-
-###############################################################################
-# BEGIN fix (100 / 236) for 'grub2_password'
-###############################################################################
-(>&2 echo "Remediating rule 100/236: 'grub2_password'")
-(>&2 echo "FIX FOR THIS RULE 'grub2_password' IS MISSING!")
-# END fix for 'grub2_password'
-
-###############################################################################
-# BEGIN fix (101 / 236) for 'grub2_no_removeable_media'
-###############################################################################
-(>&2 echo "Remediating rule 101/236: 'grub2_no_removeable_media'")
-(>&2 echo "FIX FOR THIS RULE 'grub2_no_removeable_media' IS MISSING!")
-# END fix for 'grub2_no_removeable_media'
-
-###############################################################################
-# BEGIN fix (102 / 236) for 'grub2_uefi_password'
-###############################################################################
-(>&2 echo "Remediating rule 102/236: 'grub2_uefi_password'")
-(>&2 echo "FIX FOR THIS RULE 'grub2_uefi_password' IS MISSING!")
-# END fix for 'grub2_uefi_password'
-
-###############################################################################
-# BEGIN fix (103 / 236) for 'selinux_policytype'
+#The Red Hat Enterprise Linux operating system must enable the SELinux targeted policy.
 ###############################################################################
 (>&2 echo "Remediating rule 103/236: 'selinux_policytype'")
 
@@ -3998,22 +3858,11 @@ function replace_or_append {
 replace_or_append '/etc/sysconfig/selinux' '^SELINUXTYPE=' $var_selinux_policy_name 'CCE-27279-9' '%s=%s'
 # END fix for 'selinux_policytype'
 
-###############################################################################
-# BEGIN fix (104 / 236) for 'selinux_all_devicefiles_labeled'
-###############################################################################
-(>&2 echo "Remediating rule 104/236: 'selinux_all_devicefiles_labeled'")
-(>&2 echo "FIX FOR THIS RULE 'selinux_all_devicefiles_labeled' IS MISSING!")
-# END fix for 'selinux_all_devicefiles_labeled'
+
+
 
 ###############################################################################
-# BEGIN fix (105 / 236) for 'selinux_user_login_roles'
-###############################################################################
-(>&2 echo "Remediating rule 105/236: 'selinux_user_login_roles'")
-(>&2 echo "FIX FOR THIS RULE 'selinux_user_login_roles' IS MISSING!")
-# END fix for 'selinux_user_login_roles'
-
-###############################################################################
-# BEGIN fix (106 / 236) for 'selinux_state'
+# The Red Hat Enterprise Linux operating system must enable SELinux.
 ###############################################################################
 (>&2 echo "Remediating rule 106/236: 'selinux_state'")
 
@@ -4103,6 +3952,7 @@ fixfiles -f relabel
 
 ###############################################################################
 # BEGIN fix (107 / 236) for 'account_disable_post_pw_expiration'
+#  The Red Hat Enterprise Linux operating system must disable account identifiers (individuals, groups, roles, and devices) if the password expires.
 ###############################################################################
 (>&2 echo "Remediating rule 107/236: 'account_disable_post_pw_expiration'")
 
@@ -4188,28 +4038,16 @@ replace_or_append '/etc/default/useradd' '^INACTIVE' "$var_account_disable_post_
 # END fix for 'account_disable_post_pw_expiration'
 
 ###############################################################################
-# BEGIN fix (108 / 236) for 'accounts_no_uid_except_zero'
+# The root account must be the only account having unrestricted access to the system. (V-72005).
 ###############################################################################
 (>&2 echo "Remediating rule 108/236: 'accounts_no_uid_except_zero'")
 awk -F: '$3 == 0 && $1 != "root" { print $1 }' /etc/passwd | xargs passwd -l
 # END fix for 'accounts_no_uid_except_zero'
 
-###############################################################################
-# BEGIN fix (109 / 236) for 'accounts_minimum_age_login_defs'
-###############################################################################
-(>&2 echo "Remediating rule 109/236: 'accounts_minimum_age_login_defs'")
 
-var_accounts_minimum_age_login_defs="1"
-
-grep -q ^PASS_MIN_DAYS /etc/login.defs && \
-  sed -i "s/PASS_MIN_DAYS.*/PASS_MIN_DAYS     $var_accounts_minimum_age_login_defs/g" /etc/login.defs
-if ! [ $? -eq 0 ]; then
-    echo "PASS_MIN_DAYS      $var_accounts_minimum_age_login_defs" >> /etc/login.defs
-fi
-# END fix for 'accounts_minimum_age_login_defs'
 
 ###############################################################################
-# BEGIN fix (110 / 236) for 'accounts_maximum_age_login_defs'
+#Passwords for new users must be restricted to a 60-day maximum lifetime. (V-71929)
 ###############################################################################
 (>&2 echo "Remediating rule 110/236: 'accounts_maximum_age_login_defs'")
 
@@ -4222,37 +4060,18 @@ if ! [ $? -eq 0 ]; then
 fi
 # END fix for 'accounts_maximum_age_login_defs'
 
-###############################################################################
-# BEGIN fix (111 / 236) for 'accounts_password_set_min_life_existing'
-###############################################################################
-(>&2 echo "Remediating rule 111/236: 'accounts_password_set_min_life_existing'")
-(>&2 echo "FIX FOR THIS RULE 'accounts_password_set_min_life_existing' IS MISSING!")
-# END fix for 'accounts_password_set_min_life_existing'
 
 ###############################################################################
-# BEGIN fix (112 / 236) for 'accounts_password_set_max_life_existing'
-###############################################################################
-(>&2 echo "Remediating rule 112/236: 'accounts_password_set_max_life_existing'")
-(>&2 echo "FIX FOR THIS RULE 'accounts_password_set_max_life_existing' IS MISSING!")
-# END fix for 'accounts_password_set_max_life_existing'
-
-###############################################################################
-# BEGIN fix (113 / 236) for 'no_empty_passwords'
+# The PAM system service must be configured to store only encrypted representations of passwords. (V-71919)
 ###############################################################################
 (>&2 echo "Remediating rule 113/236: 'no_empty_passwords'")
 sed --follow-symlinks -i 's/\<nullok\>//g' /etc/pam.d/system-auth
 sed --follow-symlinks -i 's/\<nullok\>//g' /etc/pam.d/password-auth
 # END fix for 'no_empty_passwords'
 
-###############################################################################
-# BEGIN fix (114 / 236) for 'gid_passwd_group_same'
-###############################################################################
-(>&2 echo "Remediating rule 114/236: 'gid_passwd_group_same'")
-(>&2 echo "FIX FOR THIS RULE 'gid_passwd_group_same' IS MISSING!")
-# END fix for 'gid_passwd_group_same'
 
 ###############################################################################
-# BEGIN fix (115 / 236) for 'set_password_hashing_algorithm_logindefs'
+# The shadow file must be configured to store only encrypted representations of passwords. (V-71921)
 ###############################################################################
 (>&2 echo "Remediating rule 115/236: 'set_password_hashing_algorithm_logindefs'")
 if grep --silent ^ENCRYPT_METHOD /etc/login.defs ; then
@@ -4264,7 +4083,7 @@ fi
 # END fix for 'set_password_hashing_algorithm_logindefs'
 
 ###############################################################################
-# BEGIN fix (116 / 236) for 'set_password_hashing_algorithm_systemauth'
+# The system must not have accounts configured with blank or null passwords. (V-71937)
 ###############################################################################
 (>&2 echo "Remediating rule 116/236: 'set_password_hashing_algorithm_systemauth'")
 
@@ -4280,7 +4099,7 @@ done
 # END fix for 'set_password_hashing_algorithm_systemauth'
 
 ###############################################################################
-# BEGIN fix (117 / 236) for 'set_password_hashing_algorithm_libuserconf'
+# User and group account administration utilities must be configured to store only encrypted representations of passwords. (V-71923)
 ###############################################################################
 (>&2 echo "Remediating rule 117/236: 'set_password_hashing_algorithm_libuserconf'")
 
@@ -4299,7 +4118,7 @@ fi
 # END fix for 'set_password_hashing_algorithm_libuserconf'
 
 ###############################################################################
-# BEGIN fix (118 / 236) for 'accounts_passwords_pam_faillock_deny_root'
+# If three unsuccessful root logon attempts within 15 minutes occur the associated account must be locked. (V-71945)
 ###############################################################################
 (>&2 echo "Remediating rule 118/236: 'accounts_passwords_pam_faillock_deny_root'")
 
@@ -4349,7 +4168,8 @@ done
 # END fix for 'accounts_passwords_pam_faillock_deny_root'
 
 ###############################################################################
-# BEGIN fix (119 / 236) for 'accounts_passwords_pam_faillock_unlock_time'
+# Rule Title: The Red Hat Enterprise Linux operating system must be configured to lock accounts for a minimum of 15 minutes after three unsuccessful logon attempts within a 15-minute timeframe.
+# Rule Title: The Red Hat Enterprise Linux operating system must lock the associated account after three unsuccessful root logon attempts are made within a 15-minute period.
 ###############################################################################
 (>&2 echo "Remediating rule 119/236: 'accounts_passwords_pam_faillock_unlock_time'")
 
@@ -4426,28 +4246,9 @@ do
 done
 # END fix for 'accounts_passwords_pam_faillock_unlock_time'
 
-###############################################################################
-# BEGIN fix (120 / 236) for 'accounts_password_pam_unix_remember'
-###############################################################################
-(>&2 echo "Remediating rule 120/236: 'accounts_password_pam_unix_remember'")
-
-var_password_pam_unix_remember="5"
-
-AUTH_FILES[0]="/etc/pam.d/system-auth"
-AUTH_FILES[1]="/etc/pam.d/password-auth"
-
-for pamFile in "${AUTH_FILES[@]}"
-do
-	if grep -q "remember=" $pamFile; then
-		sed -i --follow-symlinks "s/\(^password.*sufficient.*pam_unix.so.*\)\(\(remember *= *\)[^ $]*\)/\1remember=$var_password_pam_unix_remember/" $pamFile
-	else
-		sed -i --follow-symlinks "/^password[[:space:]]\+sufficient[[:space:]]\+pam_unix.so/ s/$/ remember=$var_password_pam_unix_remember/" $pamFile
-	fi
-done
-# END fix for 'accounts_password_pam_unix_remember'
 
 ###############################################################################
-# BEGIN fix (121 / 236) for 'accounts_passwords_pam_faillock_interval'
+# If three unsuccessful root logon attempts within 15 minutes occur the associated account must be locked. (V-71945)
 ###############################################################################
 (>&2 echo "Remediating rule 121/236: 'accounts_passwords_pam_faillock_interval'")
 function include_set_faillock_option {
@@ -4525,7 +4326,7 @@ done
 # END fix for 'accounts_passwords_pam_faillock_interval'
 
 ###############################################################################
-# BEGIN fix (122 / 236) for 'accounts_passwords_pam_faillock_deny'
+# If three unsuccessful root logon attempts within 15 minutes occur the associated account must be locked. (V-71945)
 ###############################################################################
 (>&2 echo "Remediating rule 122/236: 'accounts_passwords_pam_faillock_deny'")
 
@@ -4603,7 +4404,7 @@ done
 # END fix for 'accounts_passwords_pam_faillock_deny'
 
 ###############################################################################
-# BEGIN fix (123 / 236) for 'accounts_password_pam_minlen'
+# Passwords must be a minimum of 15 characters in length. (V-71935)
 ###############################################################################
 (>&2 echo "Remediating rule 123/236: 'accounts_password_pam_minlen'")
 
@@ -4689,7 +4490,7 @@ replace_or_append '/etc/security/pwquality.conf' '^minlen' $var_password_pam_min
 # END fix for 'accounts_password_pam_minlen'
 
 ###############################################################################
-# BEGIN fix (124 / 236) for 'accounts_password_pam_maxclassrepeat'
+# When passwords are changed or new passwords are established, pwquality must be used. (V-73159)
 ###############################################################################
 (>&2 echo "Remediating rule 124/236: 'accounts_password_pam_maxclassrepeat'")
 
@@ -4775,7 +4576,7 @@ replace_or_append '/etc/security/pwquality.conf' '^maxclassrepeat' $var_password
 # END fix for 'accounts_password_pam_maxclassrepeat'
 
 ###############################################################################
-# BEGIN fix (125 / 236) for 'accounts_password_pam_maxrepeat'
+#  When passwords are changed or new passwords are established, pwquality must be used. (V-73159)
 ###############################################################################
 (>&2 echo "Remediating rule 125/236: 'accounts_password_pam_maxrepeat'")
 
@@ -4861,7 +4662,7 @@ replace_or_append '/etc/security/pwquality.conf' '^maxrepeat' $var_password_pam_
 # END fix for 'accounts_password_pam_maxrepeat'
 
 ###############################################################################
-# BEGIN fix (126 / 236) for 'accounts_password_pam_dcredit'
+# When passwords are changed or new passwords are assigned, the new password must contain at least one numeric character. (V-71907)
 ###############################################################################
 (>&2 echo "Remediating rule 126/236: 'accounts_password_pam_dcredit'")
 
@@ -4947,7 +4748,7 @@ replace_or_append '/etc/security/pwquality.conf' '^dcredit' $var_password_pam_dc
 # END fix for 'accounts_password_pam_dcredit'
 
 ###############################################################################
-# BEGIN fix (127 / 236) for 'accounts_password_pam_minclass'
+# When passwords are changed a minimum of four character classes must be changed. (V-71913)
 ###############################################################################
 (>&2 echo "Remediating rule 127/236: 'accounts_password_pam_minclass'")
 
@@ -5033,7 +4834,7 @@ replace_or_append '/etc/security/pwquality.conf' '^minclass' $var_password_pam_m
 # END fix for 'accounts_password_pam_minclass'
 
 ###############################################################################
-# BEGIN fix (128 / 236) for 'accounts_password_pam_difok'
+# When passwords are changed a minimum of eight of the total number of characters must be changed. (V-71911)
 ###############################################################################
 (>&2 echo "Remediating rule 128/236: 'accounts_password_pam_difok'")
 
@@ -5119,7 +4920,7 @@ replace_or_append '/etc/security/pwquality.conf' '^difok' $var_password_pam_difo
 # END fix for 'accounts_password_pam_difok'
 
 ###############################################################################
-# BEGIN fix (129 / 236) for 'accounts_password_pam_ocredit'
+# When passwords are changed or new passwords are assigned, the new password must contain at least one special character. (V-71909)
 ###############################################################################
 (>&2 echo "Remediating rule 129/236: 'accounts_password_pam_ocredit'")
 
@@ -5205,7 +5006,7 @@ replace_or_append '/etc/security/pwquality.conf' '^ocredit' $var_password_pam_oc
 # END fix for 'accounts_password_pam_ocredit'
 
 ###############################################################################
-# BEGIN fix (130 / 236) for 'accounts_password_pam_lcredit'
+#  When passwords are changed or new passwords are established, the new password must contain at least one lower-case character. (V-71905
 ###############################################################################
 (>&2 echo "Remediating rule 130/236: 'accounts_password_pam_lcredit'")
 
@@ -5291,7 +5092,7 @@ replace_or_append '/etc/security/pwquality.conf' '^lcredit' $var_password_pam_lc
 # END fix for 'accounts_password_pam_lcredit'
 
 ###############################################################################
-# BEGIN fix (131 / 236) for 'accounts_password_pam_ucredit'
+# When passwords are changed or new passwords are established, the new password must contain at least one upper-case character. (V-71903)
 ###############################################################################
 (>&2 echo "Remediating rule 131/236: 'accounts_password_pam_ucredit'")
 
@@ -5377,7 +5178,7 @@ replace_or_append '/etc/security/pwquality.conf' '^ucredit' $var_password_pam_uc
 # END fix for 'accounts_password_pam_ucredit'
 
 ###############################################################################
-# BEGIN fix (132 / 236) for 'accounts_password_pam_retry'
+# Accounts subject to three unsuccessful logon attempts within 15 minutes must be locked for the maximum configurable period. (V-71943)
 ###############################################################################
 (>&2 echo "Remediating rule 132/236: 'accounts_password_pam_retry'")
 
@@ -5391,7 +5192,7 @@ fi
 # END fix for 'accounts_password_pam_retry'
 
 ###############################################################################
-# BEGIN fix (133 / 236) for 'display_login_attempts'
+# Accounts subject to three unsuccessful logon attempts within 15 minutes must be locked for the maximum configurable period. (V-71943)
 ###############################################################################
 (>&2 echo "Remediating rule 133/236: 'display_login_attempts'")
 if grep -q "^session.*pam_lastlog.so" /etc/pam.d/postlogin; then
@@ -5403,7 +5204,7 @@ echo "session     optional      pam_lastlog.so silent noupdate showfailed" >> /e
 # END fix for 'display_login_attempts'
 
 ###############################################################################
-# BEGIN fix (134 / 236) for 'package_screen_installed'
+# The operating system must have the screen package installed. (V-71897)
 ###############################################################################
 (>&2 echo "Remediating rule 134/236: 'package_screen_installed'")
 
@@ -5413,7 +5214,7 @@ fi
 # END fix for 'package_screen_installed'
 
 ###############################################################################
-# BEGIN fix (135 / 236) for 'install_smartcard_packages'
+# The operating system must have the required packages for multifactor authentication installed. (V-72417)
 ###############################################################################
 (>&2 echo "Remediating rule 135/236: 'install_smartcard_packages'")
 
@@ -5426,7 +5227,7 @@ fi
 # END fix for 'install_smartcard_packages'
 
 ###############################################################################
-# BEGIN fix (136 / 236) for 'smartcard_configure_cert_checking'
+# The operating system must uniquely identify and must authenticate organizational users (or processes acting on behalf of organizational users) using multifactor authentication. (V-71965)
 ###############################################################################
 (>&2 echo "Remediating rule 136/236: 'smartcard_configure_cert_checking'")
 
@@ -5438,19 +5239,7 @@ if grep "^\s*cert_policy" /etc/pam_pkcs11/pam_pkcs11.conf | grep -qv "ocsp_on"; 
 fi
 # END fix for 'smartcard_configure_cert_checking'
 
-###############################################################################
-# BEGIN fix (137 / 236) for 'smartcard_auth'
-###############################################################################
-(>&2 echo "Remediating rule 137/236: 'smartcard_auth'")
 
-
-# Install required packages
-if ! rpm -q --quiet "esc" ; then
-    yum install -y "esc"
-fi
-if ! rpm -q --quiet "pam_pkcs11" ; then
-    yum install -y "pam_pkcs11"
-fi
 
 # Enable pcscd.socket systemd activation socket
 # Function to enable/disable and start/stop services on RHEL and Fedora systems.
@@ -5602,7 +5391,7 @@ sed -i "/ocsp_on/! s/^[$SP]*cert_policy[$SP]\+=[$SP]\+\(.*\);/\t\tcert_policy = 
 # END fix for 'smartcard_auth'
 
 ###############################################################################
-# BEGIN fix (138 / 236) for 'disable_ctrlaltdel_reboot'
+# The Red Hat Enterprise Linux operating system must be configured so that the x86 Ctrl-Alt-Delete key sequence is disabled on the command line.
 ###############################################################################
 (>&2 echo "Remediating rule 138/236: 'disable_ctrlaltdel_reboot'")
 # The process to disable ctrl+alt+del has changed in RHEL7. 
@@ -5612,7 +5401,7 @@ systemctl mask ctrl-alt-del.target
 # END fix for 'disable_ctrlaltdel_reboot'
 
 ###############################################################################
-# BEGIN fix (139 / 236) for 'require_singleuser_auth'
+# The operating system must require authentication upon booting into single-user and maintenance modes. (V-77823)
 ###############################################################################
 (>&2 echo "Remediating rule 139/236: 'require_singleuser_auth'")
 
@@ -5628,7 +5417,7 @@ fi
 # END fix for 'require_singleuser_auth'
 
 ###############################################################################
-# BEGIN fix (140 / 236) for 'dconf_gnome_banner_enabled'
+# The Red Hat Enterprise Linux operating system must display the Standard Mandatory DoD Notice and Consent Banner before granting local or remote access to the system via a graphical user logon.
 ###############################################################################
 (>&2 echo "Remediating rule 140/236: 'dconf_gnome_banner_enabled'")
 function include_dconf_settings {
@@ -5716,7 +5505,7 @@ dconf_lock 'org/gnome/login-screen' 'banner-message-enable' 'gdm.d' '00-security
 # END fix for 'dconf_gnome_banner_enabled'
 
 ###############################################################################
-# BEGIN fix (141 / 236) for 'dconf_gnome_login_banner_text'
+# The Red Hat Enterprise Linux operating system must display the Standard Mandatory DoD Notice and Consent Banner before granting local or remote access to the system via a graphical user logon.
 ###############################################################################
 (>&2 echo "Remediating rule 141/236: 'dconf_gnome_login_banner_text'")
 
@@ -5808,7 +5597,7 @@ dconf_lock 'org/gnome/login-screen' 'banner-message-text' 'gdm.d' '00-security-s
 # END fix for 'dconf_gnome_login_banner_text'
 
 ###############################################################################
-# BEGIN fix (142 / 236) for 'banner_etc_issue'
+# The Red Hat Enterprise Linux operating system must display the Standard Mandatory DoD Notice and Consent Banner before granting local or remote access to the system via a graphical user logon.
 ###############################################################################
 (>&2 echo "Remediating rule 142/236: 'banner_etc_issue'")
 
@@ -5823,17 +5612,10 @@ $formatted
 EOF
 
 printf "\n" >> /etc/issue
-# END fix for 'banner_etc_issue'
+
 
 ###############################################################################
-# BEGIN fix (143 / 236) for 'accounts_umask_interactive_users'
-###############################################################################
-(>&2 echo "Remediating rule 143/236: 'accounts_umask_interactive_users'")
-(>&2 echo "FIX FOR THIS RULE 'accounts_umask_interactive_users' IS MISSING!")
-# END fix for 'accounts_umask_interactive_users'
-
-###############################################################################
-# BEGIN fix (144 / 236) for 'accounts_umask_etc_login_defs'
+# The Red Hat Enterprise Linux operating system must define default permissions for all authenticated users in such a way that the user can only read and modify their own files.
 ###############################################################################
 (>&2 echo "Remediating rule 144/236: 'accounts_umask_etc_login_defs'")
 
@@ -5918,44 +5700,9 @@ function replace_or_append {
 replace_or_append '/etc/login.defs' '^UMASK' "$var_accounts_user_umask" 'CCE-80205-8' '%s %s'
 # END fix for 'accounts_umask_etc_login_defs'
 
-###############################################################################
-# BEGIN fix (145 / 236) for 'accounts_tmout'
-###############################################################################
-(>&2 echo "Remediating rule 145/236: 'accounts_tmout'")
-
-var_accounts_tmout="600"
-
-if grep --silent ^TMOUT /etc/profile ; then
-        sed -i "s/^TMOUT.*/TMOUT=$var_accounts_tmout/g" /etc/profile
-else
-        echo -e "\n# Set TMOUT to $var_accounts_tmout per security requirements" >> /etc/profile
-        echo "TMOUT=$var_accounts_tmout" >> /etc/profile
-fi
-# END fix for 'accounts_tmout'
 
 ###############################################################################
-# BEGIN fix (146 / 236) for 'accounts_user_dot_user_ownership'
-###############################################################################
-(>&2 echo "Remediating rule 146/236: 'accounts_user_dot_user_ownership'")
-(>&2 echo "FIX FOR THIS RULE 'accounts_user_dot_user_ownership' IS MISSING!")
-# END fix for 'accounts_user_dot_user_ownership'
-
-###############################################################################
-# BEGIN fix (147 / 236) for 'file_permission_user_init_files'
-###############################################################################
-(>&2 echo "Remediating rule 147/236: 'file_permission_user_init_files'")
-(>&2 echo "FIX FOR THIS RULE 'file_permission_user_init_files' IS MISSING!")
-# END fix for 'file_permission_user_init_files'
-
-###############################################################################
-# BEGIN fix (148 / 236) for 'accounts_user_interactive_home_directory_exists'
-###############################################################################
-(>&2 echo "Remediating rule 148/236: 'accounts_user_interactive_home_directory_exists'")
-(>&2 echo "FIX FOR THIS RULE 'accounts_user_interactive_home_directory_exists' IS MISSING!")
-# END fix for 'accounts_user_interactive_home_directory_exists'
-
-###############################################################################
-# BEGIN fix (149 / 236) for 'accounts_have_homedir_login_defs'
+# The Red Hat Enterprise Linux operating system must be configured so that all local interactive user accounts, upon creation, are assigned a home directory.
 ###############################################################################
 (>&2 echo "Remediating rule 149/236: 'accounts_have_homedir_login_defs'")
 
@@ -5970,11 +5717,11 @@ fi
 # BEGIN fix (150 / 236) for 'accounts_user_dot_group_ownership'
 ###############################################################################
 (>&2 echo "Remediating rule 150/236: 'accounts_user_dot_group_ownership'")
-(>&2 echo "FIX FOR THIS RULE 'accounts_user_dot_group_ownership' IS MISSING!")
+(>&2 echo "FIX FOR THIS RULE 'accounts_user_dot_group_ownership' Must Be Created Manually")
 # END fix for 'accounts_user_dot_group_ownership'
 
 ###############################################################################
-# BEGIN fix (151 / 236) for 'accounts_logon_fail_delay'
+# Rule Title: The Red Hat Enterprise Linux operating system must be configured so that the delay between logon prompts following a failed console logon attempt is at least four seconds.
 ###############################################################################
 (>&2 echo "Remediating rule 151/236: 'accounts_logon_fail_delay'")
 
@@ -6061,29 +5808,9 @@ function replace_or_append {
 replace_or_append '/etc/login.defs' '^FAIL_DELAY' "$var_accounts_fail_delay" 'CCE-80352-8' '%s %s'
 # END fix for 'accounts_logon_fail_delay'
 
-###############################################################################
-# BEGIN fix (152 / 236) for 'accounts_users_home_files_groupownership'
-###############################################################################
-(>&2 echo "Remediating rule 152/236: 'accounts_users_home_files_groupownership'")
-(>&2 echo "FIX FOR THIS RULE 'accounts_users_home_files_groupownership' IS MISSING!")
-# END fix for 'accounts_users_home_files_groupownership'
 
 ###############################################################################
-# BEGIN fix (153 / 236) for 'accounts_user_home_paths_only'
-###############################################################################
-(>&2 echo "Remediating rule 153/236: 'accounts_user_home_paths_only'")
-(>&2 echo "FIX FOR THIS RULE 'accounts_user_home_paths_only' IS MISSING!")
-# END fix for 'accounts_user_home_paths_only'
-
-###############################################################################
-# BEGIN fix (154 / 236) for 'accounts_users_home_files_permissions'
-###############################################################################
-(>&2 echo "Remediating rule 154/236: 'accounts_users_home_files_permissions'")
-(>&2 echo "FIX FOR THIS RULE 'accounts_users_home_files_permissions' IS MISSING!")
-# END fix for 'accounts_users_home_files_permissions'
-
-###############################################################################
-# BEGIN fix (155 / 236) for 'accounts_max_concurrent_login_sessions'
+# The operating system must limit the number of concurrent sessions to 10 for all accounts and/or account types. (V-72217)
 ###############################################################################
 (>&2 echo "Remediating rule 155/236: 'accounts_max_concurrent_login_sessions'")
 
@@ -6098,50 +5825,9 @@ else
 fi
 # END fix for 'accounts_max_concurrent_login_sessions'
 
-###############################################################################
-# BEGIN fix (156 / 236) for 'file_groupownership_home_directories'
-###############################################################################
-(>&2 echo "Remediating rule 156/236: 'file_groupownership_home_directories'")
-(>&2 echo "FIX FOR THIS RULE 'file_groupownership_home_directories' IS MISSING!")
-# END fix for 'file_groupownership_home_directories'
 
 ###############################################################################
-# BEGIN fix (157 / 236) for 'accounts_user_interactive_home_directory_defined'
-###############################################################################
-(>&2 echo "Remediating rule 157/236: 'accounts_user_interactive_home_directory_defined'")
-(>&2 echo "FIX FOR THIS RULE 'accounts_user_interactive_home_directory_defined' IS MISSING!")
-# END fix for 'accounts_user_interactive_home_directory_defined'
-
-###############################################################################
-# BEGIN fix (158 / 236) for 'accounts_user_dot_no_world_writable_programs'
-###############################################################################
-(>&2 echo "Remediating rule 158/236: 'accounts_user_dot_no_world_writable_programs'")
-(>&2 echo "FIX FOR THIS RULE 'accounts_user_dot_no_world_writable_programs' IS MISSING!")
-# END fix for 'accounts_user_dot_no_world_writable_programs'
-
-###############################################################################
-# BEGIN fix (159 / 236) for 'accounts_users_home_files_ownership'
-###############################################################################
-(>&2 echo "Remediating rule 159/236: 'accounts_users_home_files_ownership'")
-(>&2 echo "FIX FOR THIS RULE 'accounts_users_home_files_ownership' IS MISSING!")
-# END fix for 'accounts_users_home_files_ownership'
-
-###############################################################################
-# BEGIN fix (160 / 236) for 'file_ownership_home_directories'
-###############################################################################
-(>&2 echo "Remediating rule 160/236: 'file_ownership_home_directories'")
-(>&2 echo "FIX FOR THIS RULE 'file_ownership_home_directories' IS MISSING!")
-# END fix for 'file_ownership_home_directories'
-
-###############################################################################
-# BEGIN fix (161 / 236) for 'file_permissions_home_directories'
-###############################################################################
-(>&2 echo "Remediating rule 161/236: 'file_permissions_home_directories'")
-(>&2 echo "FIX FOR THIS RULE 'file_permissions_home_directories' IS MISSING!")
-# END fix for 'file_permissions_home_directories'
-
-###############################################################################
-# BEGIN fix (162 / 236) for 'auditd_audispd_encrypt_sent_records'
+# These audit records must also identify individual identities of group account users. (V-72079)
 ###############################################################################
 (>&2 echo "Remediating rule 162/236: 'auditd_audispd_encrypt_sent_records'")
 
@@ -6231,7 +5917,7 @@ replace_or_append $AUDISP_REMOTE_CONFIG "$option" "$value" "CCE-80540-8"
 # END fix for 'auditd_audispd_encrypt_sent_records'
 
 ###############################################################################
-# BEGIN fix (163 / 236) for 'auditd_audispd_configure_remote_server'
+# The operating system must off-load audit records onto a different system or media from the system being audited. (V-72083)
 ###############################################################################
 (>&2 echo "Remediating rule 163/236: 'auditd_audispd_configure_remote_server'")
 
@@ -6319,15 +6005,10 @@ function replace_or_append {
 replace_or_append $AUDITCONFIG '^remote_server' "$var_audispd_remote_server" "CCE-80541-6"
 # END fix for 'auditd_audispd_configure_remote_server'
 
-###############################################################################
-# BEGIN fix (164 / 236) for 'auditd_audispd_network_failure_action'
-###############################################################################
-(>&2 echo "Remediating rule 164/236: 'auditd_audispd_network_failure_action'")
-(>&2 echo "FIX FOR THIS RULE 'auditd_audispd_network_failure_action' IS MISSING!")
-# END fix for 'auditd_audispd_network_failure_action'
 
 ###############################################################################
-# BEGIN fix (165 / 236) for 'auditd_data_retention_space_left'
+# The operating system must immediately notify the System Administrator (SA) and Information System Security Officer ISSO (at a minimum) 
+# when allocated audit record storage volume reaches 75% of the repository maximum audit record storage capacity. (V-72089)
 ###############################################################################
 (>&2 echo "Remediating rule 165/236: 'auditd_data_retention_space_left'")
 
@@ -6339,7 +6020,8 @@ grep -q "^space_left[[:space:]]*=.*$" /etc/audit/auditd.conf && \
 # END fix for 'auditd_data_retention_space_left'
 
 ###############################################################################
-# BEGIN fix (166 / 236) for 'auditd_data_retention_action_mail_acct'
+# The operating system must immediately notify the System Administrator (SA) and Information System Security Officer (ISSO) (at a minimum) when 
+# the threshold for the repository maximum audit record storage capacity is reached. (V-72093)
 ###############################################################################
 (>&2 echo "Remediating rule 166/236: 'auditd_data_retention_action_mail_acct'")
 
@@ -6392,9 +6074,7 @@ function replace_or_append {
 
   # Test if the config_file is a symbolic link. If so, use --follow-symlinks with sed.
   # Otherwise, regular sed command will do.
-  sed_command=('sed' '-i')
-  if test -L "$config_file"; then
-    sed_command+=('--follow-symlinks')
+  sed_command=('sed' '-i')The operating system must immediately notify the System Administrator (SA) and Information System Security Officer (ISSO) (at a minimum) when the threshold for the repository maximum audit record storage capacity is reached. (V-72093)
   fi
 
   # Test that the cce arg is not empty or does not equal @CCENUM@.
@@ -6427,14 +6107,7 @@ replace_or_append $AUDITCONFIG '^action_mail_acct' "$var_auditd_action_mail_acct
 # END fix for 'auditd_data_retention_action_mail_acct'
 
 ###############################################################################
-# BEGIN fix (167 / 236) for 'auditd_audispd_disk_full_action'
-###############################################################################
-(>&2 echo "Remediating rule 167/236: 'auditd_audispd_disk_full_action'")
-(>&2 echo "FIX FOR THIS RULE 'auditd_audispd_disk_full_action' IS MISSING!")
-# END fix for 'auditd_audispd_disk_full_action'
-
-###############################################################################
-# BEGIN fix (168 / 236) for 'auditd_data_retention_space_left_action'
+# The audit system must take appropriate action when the audit storage volume is full. (V-72087)
 ###############################################################################
 (>&2 echo "Remediating rule 168/236: 'auditd_data_retention_space_left_action'")
 
@@ -6528,7 +6201,7 @@ replace_or_append $AUDITCONFIG '^space_left_action' "$var_auditd_space_left_acti
 # END fix for 'auditd_data_retention_space_left_action'
 
 ###############################################################################
-# BEGIN fix (169 / 236) for 'audit_rules_kernel_module_loading_finit'
+# The operating system must shut down upon audit processing failure, unless availability is an overriding concern. If availability is a concern, the system must alert the designated staff (System Administrator [SA] and Information System Security Officer [ISSO] at a minimum) in the event of an audit processing failure. (V-72081)
 ###############################################################################
 (>&2 echo "Remediating rule 169/236: 'audit_rules_kernel_module_loading_finit'")
 
@@ -6773,7 +6446,7 @@ done
 # END fix for 'audit_rules_kernel_module_loading_finit'
 
 ###############################################################################
-# BEGIN fix (170 / 236) for 'audit_rules_kernel_module_loading_init'
+# The operating system must shut down upon audit processing failure, unless availability is an overriding concern. If availability is a concern, the system must alert the designated staff (System Administrator [SA] and Information System Security Officer [ISSO] at a minimum) in the event of an audit processing failure. (V-72081)
 ###############################################################################
 (>&2 echo "Remediating rule 170/236: 'audit_rules_kernel_module_loading_init'")
 
@@ -7018,7 +6691,7 @@ done
 # END fix for 'audit_rules_kernel_module_loading_init'
 
 ###############################################################################
-# BEGIN fix (171 / 236) for 'audit_rules_kernel_module_loading_delete'
+# The operating system must shut down upon audit processing failure, unless availability is an overriding concern. If availability is a concern, the system must alert the designated staff (System Administrator [SA] and Information System Security Officer [ISSO] at a minimum) in the event of an audit processing failure. (V-72081)
 ###############################################################################
 (>&2 echo "Remediating rule 171/236: 'audit_rules_kernel_module_loading_delete'")
 
@@ -7263,7 +6936,7 @@ done
 # END fix for 'audit_rules_kernel_module_loading_delete'
 
 ###############################################################################
-# BEGIN fix (172 / 236) for 'audit_rules_login_events_lastlog'
+# The system must display the date and time of the last successful account logon upon logon. (V-72275)
 ###############################################################################
 (>&2 echo "Remediating rule 172/236: 'audit_rules_login_events_lastlog'")
 
@@ -7403,7 +7076,7 @@ fix_audit_watch_rule "augenrules" "/var/log/lastlog" "wa" "logins"
 # END fix for 'audit_rules_login_events_lastlog'
 
 ###############################################################################
-# BEGIN fix (173 / 236) for 'audit_rules_login_events_faillock'
+# BEGIN fix (173 / 236) If three unsuccessful root logon attempts within 15 minutes occur the associated account must be locked. (V-71945)
 ###############################################################################
 (>&2 echo "Remediating rule 173/236: 'audit_rules_login_events_faillock'")
 
@@ -7683,7 +7356,7 @@ fix_audit_watch_rule "augenrules" "/var/log/tallylog" "wa" "logins"
 # END fix for 'audit_rules_login_events_tallylog'
 
 ###############################################################################
-# BEGIN fix (175 / 236) for 'audit_rules_dac_modification_fchown'
+# All uses of the fchown command must be audited. (V-72099)
 ###############################################################################
 (>&2 echo "Remediating rule 175/236: 'audit_rules_dac_modification_fchown'")
 
@@ -7925,7 +7598,7 @@ done
 # END fix for 'audit_rules_dac_modification_fchown'
 
 ###############################################################################
-# BEGIN fix (176 / 236) for 'audit_rules_dac_modification_setxattr'
+# All uses of the setxattr command must be audited. (V-72111)
 ###############################################################################
 (>&2 echo "Remediating rule 176/236: 'audit_rules_dac_modification_setxattr'")
 
@@ -8167,7 +7840,7 @@ done
 # END fix for 'audit_rules_dac_modification_setxattr'
 
 ###############################################################################
-# BEGIN fix (177 / 236) for 'audit_rules_dac_modification_chown'
+# All uses of the chown command must be audited. (V-72097)
 ###############################################################################
 (>&2 echo "Remediating rule 177/236: 'audit_rules_dac_modification_chown'")
 
@@ -8409,7 +8082,7 @@ done
 # END fix for 'audit_rules_dac_modification_chown'
 
 ###############################################################################
-# BEGIN fix (178 / 236) for 'audit_rules_dac_modification_fchownat'
+# All uses of the fchownat command must be audited. (V-72103)
 ###############################################################################
 (>&2 echo "Remediating rule 178/236: 'audit_rules_dac_modification_fchownat'")
 
@@ -8651,7 +8324,7 @@ done
 # END fix for 'audit_rules_dac_modification_fchownat'
 
 ###############################################################################
-# BEGIN fix (179 / 236) for 'audit_rules_dac_modification_chmod'
+# All uses of the chmod command must be audited. (V-72105)
 ###############################################################################
 (>&2 echo "Remediating rule 179/236: 'audit_rules_dac_modification_chmod'")
 
@@ -8892,250 +8565,9 @@ return $retval
 done
 # END fix for 'audit_rules_dac_modification_chmod'
 
-###############################################################################
-# BEGIN fix (180 / 236) for 'audit_rules_dac_modification_fchmodat'
-###############################################################################
-(>&2 echo "Remediating rule 180/236: 'audit_rules_dac_modification_fchmodat'")
-
-
-# First perform the remediation of the syscall rule
-# Retrieve hardware architecture of the underlying system
-[ "$(getconf LONG_BIT)" = "32" ] && RULE_ARCHS=("b32") || RULE_ARCHS=("b32" "b64")
-
-for ARCH in "${RULE_ARCHS[@]}"
-do
-	PATTERN="-a always,exit -F arch=$ARCH -S fchmodat.*"
-	GROUP="perm_mod"
-	FULL_RULE="-a always,exit -F arch=$ARCH -S fchmodat -F auid>=1000 -F auid!=unset -F key=perm_mod"
-
-	# Perform the remediation for both possible tools: 'auditctl' and 'augenrules'
-# Function to fix syscall audit rule for given system call. It is
-# based on example audit syscall rule definitions as outlined in
-# /usr/share/doc/audit-2.3.7/stig.rules file provided with the audit
-# package. It will combine multiple system calls belonging to the same
-# syscall group into one audit rule (rather than to create audit rule per
-# different system call) to avoid audit infrastructure performance penalty
-# in the case of 'one-audit-rule-definition-per-one-system-call'. See:
-#
-#   https://www.redhat.com/archives/linux-audit/2014-November/msg00009.html
-#
-# for further details.
-#
-# Expects five arguments (each of them is required) in the form of:
-# * audit tool				tool used to load audit rules,
-# 					either 'auditctl', or 'augenrules
-# * audit rules' pattern		audit rule skeleton for same syscall
-# * syscall group			greatest common string this rule shares
-# 					with other rules from the same group
-# * architecture			architecture this rule is intended for
-# * full form of new rule to add	expected full form of audit rule as to be
-# 					added into audit.rules file
-#
-# Note: The 2-th up to 4-th arguments are used to determine how many existing
-# audit rules will be inspected for resemblance with the new audit rule
-# (5-th argument) the function is going to add. The rule's similarity check
-# is performed to optimize audit.rules definition (merge syscalls of the same
-# group into one rule) to avoid the "single-syscall-per-audit-rule" performance
-# penalty.
-#
-# Example call:
-#
-#	See e.g. 'audit_rules_file_deletion_events.sh' remediation script
-#
-function fix_audit_syscall_rule {
-
-# Load function arguments into local variables
-local tool="$1"
-local pattern="$2"
-local group="$3"
-local arch="$4"
-local full_rule="$5"
-
-# Check sanity of the input
-if [ $# -ne "5" ]
-then
-	echo "Usage: fix_audit_syscall_rule 'tool' 'pattern' 'group' 'arch' 'full rule'"
-	echo "Aborting."
-	exit 1
-fi
-
-# Create a list of audit *.rules files that should be inspected for presence and correctness
-# of a particular audit rule. The scheme is as follows:
-# 
-# -----------------------------------------------------------------------------------------
-#  Tool used to load audit rules | Rule already defined  |  Audit rules file to inspect    |
-# -----------------------------------------------------------------------------------------
-#        auditctl                |     Doesn't matter    |  /etc/audit/audit.rules         |
-# -----------------------------------------------------------------------------------------
-#        augenrules              |          Yes          |  /etc/audit/rules.d/*.rules     |
-#        augenrules              |          No           |  /etc/audit/rules.d/$key.rules  |
-# -----------------------------------------------------------------------------------------
-#
-declare -a files_to_inspect
-
-retval=0
-
-# First check sanity of the specified audit tool
-if [ "$tool" != 'auditctl' ] && [ "$tool" != 'augenrules' ]
-then
-	echo "Unknown audit rules loading tool: $1. Aborting."
-	echo "Use either 'auditctl' or 'augenrules'!"
-	return 1
-# If audit tool is 'auditctl', then add '/etc/audit/audit.rules'
-# file to the list of files to be inspected
-elif [ "$tool" == 'auditctl' ]
-then
-	files_to_inspect+=('/etc/audit/audit.rules' )
-# If audit tool is 'augenrules', then check if the audit rule is defined
-# If rule is defined, add '/etc/audit/rules.d/*.rules' to the list for inspection
-# If rule isn't defined yet, add '/etc/audit/rules.d/$key.rules' to the list for inspection
-elif [ "$tool" == 'augenrules' ]
-then
-	# Extract audit $key from audit rule so we can use it later
-	key=$(expr "$full_rule" : '.*-k[[:space:]]\([^[:space:]]\+\)' '|' "$full_rule" : '.*-F[[:space:]]key=\([^[:space:]]\+\)')
-	readarray -t matches < <(sed -s -n -e "\;${pattern};!d" -e "/${arch}/!d" -e "/${group}/!d;F" /etc/audit/rules.d/*.rules)
-	if [ $? -ne 0 ]
-	then
-		retval=1
-	fi
-	for match in "${matches[@]}"
-	do
-		files_to_inspect+=("${match}")
-	done
-	# Case when particular rule isn't defined in /etc/audit/rules.d/*.rules yet
-	if [ ${#files_to_inspect[@]} -eq "0" ]
-	then
-		file_to_inspect="/etc/audit/rules.d/$key.rules"
-		files_to_inspect=("$file_to_inspect")
-		if [ ! -e "$file_to_inspect" ]
-		then
-			touch "$file_to_inspect"
-			chmod 0640 "$file_to_inspect"
-		fi
-	fi
-fi
-
-#
-# Indicator that we want to append $full_rule into $audit_file by default
-local append_expected_rule=0
-
-for audit_file in "${files_to_inspect[@]}"
-do
-	# Filter existing $audit_file rules' definitions to select those that:
-	# * follow the rule pattern, and
-	# * meet the hardware architecture requirement, and
-	# * are current syscall group specific
-	readarray -t existing_rules < <(sed -e "\;${pattern};!d" -e "/${arch}/!d" -e "/${group}/!d"  "$audit_file")
-	if [ $? -ne 0 ]
-	then
-		retval=1
-	fi
-
-	# Process rules found case-by-case
-	for rule in "${existing_rules[@]}"
-	do
-		# Found rule is for same arch & key, but differs (e.g. in count of -S arguments)
-		if [ "${rule}" != "${full_rule}" ]
-		then
-			# If so, isolate just '(-S \w)+' substring of that rule
-			rule_syscalls=$(echo $rule | grep -o -P '(-S \w+ )+')
-			# Check if list of '-S syscall' arguments of that rule is subset
-			# of '-S syscall' list of expected $full_rule
-			if grep -q -- "$rule_syscalls" <<< "$full_rule"
-			then
-				# Rule is covered (i.e. the list of -S syscalls for this rule is
-				# subset of -S syscalls of $full_rule => existing rule can be deleted
-				# Thus delete the rule from audit.rules & our array
-				sed -i -e "\;${rule};d" "$audit_file"
-				if [ $? -ne 0 ]
-				then
-					retval=1
-				fi
-				existing_rules=("${existing_rules[@]//$rule/}")
-			else
-				# Rule isn't covered by $full_rule - it besides -S syscall arguments
-				# for this group contains also -S syscall arguments for other syscall
-				# group. Example: '-S lchown -S fchmod -S fchownat' => group='chown'
-				# since 'lchown' & 'fchownat' share 'chown' substring
-				# Therefore:
-				# * 1) delete the original rule from audit.rules
-				# (original '-S lchown -S fchmod -S fchownat' rule would be deleted)
-				# * 2) delete the -S syscall arguments for this syscall group, but
-				# keep those not belonging to this syscall group
-				# (original '-S lchown -S fchmod -S fchownat' would become '-S fchmod'
-				# * 3) append the modified (filtered) rule again into audit.rules
-				# if the same rule not already present
-				#
-				# 1) Delete the original rule
-				sed -i -e "\;${rule};d" "$audit_file"
-				if [ $? -ne 0 ]
-				then
-					retval=1
-				fi
-
-				# 2) Delete syscalls for this group, but keep those from other groups
-				# Convert current rule syscall's string into array splitting by '-S' delimiter
-				IFS_BKP="$IFS"
-				IFS=$'-S'
-				read -a rule_syscalls_as_array <<< "$rule_syscalls"
-				# Reset IFS back to default
-				IFS="$IFS_BKP"
-				# Splitting by "-S" can't be replaced by the readarray functionality easily
-
-				# Declare new empty string to hold '-S syscall' arguments from other groups
-				new_syscalls_for_rule=''
-				# Walk through existing '-S syscall' arguments
-				for syscall_arg in "${rule_syscalls_as_array[@]}"
-				do
-					# Skip empty $syscall_arg values
-					if [ "$syscall_arg" == '' ]
-					then
-						continue
-					fi
-					# If the '-S syscall' doesn't belong to current group add it to the new list
-					# (together with adding '-S' delimiter back for each of such item found)
-					if grep -q -v -- "$group" <<< "$syscall_arg"
-					then
-						new_syscalls_for_rule="$new_syscalls_for_rule -S $syscall_arg"
-					fi
-				done
-				# Replace original '-S syscall' list with the new one for this rule
-				updated_rule=${rule//$rule_syscalls/$new_syscalls_for_rule}
-				# Squeeze repeated whitespace characters in rule definition (if any) into one
-				updated_rule=$(echo "$updated_rule" | tr -s '[:space:]')
-				# 3) Append the modified / filtered rule again into audit.rules
-				#    (but only in case it's not present yet to prevent duplicate definitions)
-				if ! grep -q -- "$updated_rule" "$audit_file"
-				then
-					echo "$updated_rule" >> "$audit_file"
-				fi
-			fi
-		else
-			# $audit_file already contains the expected rule form for this
-			# architecture & key => don't insert it second time
-			append_expected_rule=1
-		fi
-	done
-
-	# We deleted all rules that were subset of the expected one for this arch & key.
-	# Also isolated rules containing system calls not from this system calls group.
-	# Now append the expected rule if it's not present in $audit_file yet
-	if [[ ${append_expected_rule} -eq "0" ]]
-	then
-		echo "$full_rule" >> "$audit_file"
-	fi
-done
-
-return $retval
-
-}
-	fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
-	fix_audit_syscall_rule "auditctl" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
-done
-# END fix for 'audit_rules_dac_modification_fchmodat'
 
 ###############################################################################
-# BEGIN fix (181 / 236) for 'audit_rules_dac_modification_removexattr'
+# All uses of the removexattr command must be audited. (V-72117)
 ###############################################################################
 (>&2 echo "Remediating rule 181/236: 'audit_rules_dac_modification_removexattr'")
 
@@ -9377,7 +8809,7 @@ done
 # END fix for 'audit_rules_dac_modification_removexattr'
 
 ###############################################################################
-# BEGIN fix (182 / 236) for 'audit_rules_dac_modification_fremovexattr'
+# All uses of the fremovexattr command must be audited. (V-72119)
 ###############################################################################
 (>&2 echo "Remediating rule 182/236: 'audit_rules_dac_modification_fremovexattr'")
 
@@ -9619,7 +9051,7 @@ done
 # END fix for 'audit_rules_dac_modification_fremovexattr'
 
 ###############################################################################
-# BEGIN fix (183 / 236) for 'audit_rules_dac_modification_lsetxattr'
+# All uses of the lsetxattr command must be audited. (V-72115)
 ###############################################################################
 (>&2 echo "Remediating rule 183/236: 'audit_rules_dac_modification_lsetxattr'")
 
@@ -9861,7 +9293,7 @@ done
 # END fix for 'audit_rules_dac_modification_lsetxattr'
 
 ###############################################################################
-# BEGIN fix (184 / 236) for 'audit_rules_dac_modification_fchmod'
+# All uses of the fchmod command must be audited. (V-72107)
 ###############################################################################
 (>&2 echo "Remediating rule 184/236: 'audit_rules_dac_modification_fchmod'")
 
@@ -10103,7 +9535,7 @@ done
 # END fix for 'audit_rules_dac_modification_fchmod'
 
 ###############################################################################
-# BEGIN fix (185 / 236) for 'audit_rules_dac_modification_lchown'
+# All uses of the lchown command must be audited. (V-72101)
 ###############################################################################
 (>&2 echo "Remediating rule 185/236: 'audit_rules_dac_modification_lchown'")
 
@@ -10345,7 +9777,7 @@ done
 # END fix for 'audit_rules_dac_modification_lchown'
 
 ###############################################################################
-# BEGIN fix (186 / 236) for 'audit_rules_dac_modification_fsetxattr'
+# All uses of the fsetxattr command must be audited. (V-72113)
 ###############################################################################
 (>&2 echo "Remediating rule 186/236: 'audit_rules_dac_modification_fsetxattr'")
 
@@ -10587,7 +10019,7 @@ done
 # END fix for 'audit_rules_dac_modification_fsetxattr'
 
 ###############################################################################
-# BEGIN fix (187 / 236) for 'audit_rules_dac_modification_lremovexattr'
+# All uses of the lremovexattr command must be audited. (V-72121)
 ###############################################################################
 (>&2 echo "Remediating rule 187/236: 'audit_rules_dac_modification_lremovexattr'")
 
@@ -10829,7 +10261,7 @@ done
 # END fix for 'audit_rules_dac_modification_lremovexattr'
 
 ###############################################################################
-# BEGIN fix (188 / 236) for 'audit_rules_unsuccessful_file_modification_truncate'
+# All uses of the truncate command must be audited. (V-72131)
 ###############################################################################
 (>&2 echo "Remediating rule 188/236: 'audit_rules_unsuccessful_file_modification_truncate'")
 function create_audit_remediation_unsuccessful_file_modification_detailed {
@@ -10882,7 +10314,7 @@ create_audit_remediation_unsuccessful_file_modification_detailed /etc/audit/rule
 # END fix for 'audit_rules_unsuccessful_file_modification_truncate'
 
 ###############################################################################
-# BEGIN fix (189 / 236) for 'audit_rules_unsuccessful_file_modification_creat'
+# All uses of the creat command must be audited. (V-72123)
 ###############################################################################
 (>&2 echo "Remediating rule 189/236: 'audit_rules_unsuccessful_file_modification_creat'")
 function create_audit_remediation_unsuccessful_file_modification_detailed {
@@ -10935,7 +10367,7 @@ create_audit_remediation_unsuccessful_file_modification_detailed /etc/audit/rule
 # END fix for 'audit_rules_unsuccessful_file_modification_creat'
 
 ###############################################################################
-# BEGIN fix (190 / 236) for 'audit_rules_unsuccessful_file_modification_open'
+# All uses of the open command must be audited. (V-72125)
 ###############################################################################
 (>&2 echo "Remediating rule 190/236: 'audit_rules_unsuccessful_file_modification_open'")
 function create_audit_remediation_unsuccessful_file_modification_detailed {
@@ -10988,7 +10420,7 @@ create_audit_remediation_unsuccessful_file_modification_detailed /etc/audit/rule
 # END fix for 'audit_rules_unsuccessful_file_modification_open'
 
 ###############################################################################
-# BEGIN fix (191 / 236) for 'audit_rules_unsuccessful_file_modification_open_by_handle_at'
+# All uses of the open_by_handle_at command must be audited. (V-72129)
 ###############################################################################
 (>&2 echo "Remediating rule 191/236: 'audit_rules_unsuccessful_file_modification_open_by_handle_at'")
 function create_audit_remediation_unsuccessful_file_modification_detailed {
@@ -11041,7 +10473,7 @@ create_audit_remediation_unsuccessful_file_modification_detailed /etc/audit/rule
 # END fix for 'audit_rules_unsuccessful_file_modification_open_by_handle_at'
 
 ###############################################################################
-# BEGIN fix (192 / 236) for 'audit_rules_unsuccessful_file_modification_ftruncate'
+# All uses of the ftruncate command must be audited. (V-72133)
 ###############################################################################
 (>&2 echo "Remediating rule 192/236: 'audit_rules_unsuccessful_file_modification_ftruncate'")
 function create_audit_remediation_unsuccessful_file_modification_detailed {
@@ -11094,7 +10526,7 @@ create_audit_remediation_unsuccessful_file_modification_detailed /etc/audit/rule
 # END fix for 'audit_rules_unsuccessful_file_modification_ftruncate'
 
 ###############################################################################
-# BEGIN fix (193 / 236) for 'audit_rules_unsuccessful_file_modification_openat'
+# All uses of the openat command must be audited. (V-72127)
 ###############################################################################
 (>&2 echo "Remediating rule 193/236: 'audit_rules_unsuccessful_file_modification_openat'")
 function create_audit_remediation_unsuccessful_file_modification_detailed {
@@ -11147,7 +10579,7 @@ create_audit_remediation_unsuccessful_file_modification_detailed /etc/audit/rule
 # END fix for 'audit_rules_unsuccessful_file_modification_openat'
 
 ###############################################################################
-# BEGIN fix (194 / 236) for 'audit_rules_execution_setfiles'
+# All uses of the setfiles command must be audited. (V-72141)
 ###############################################################################
 (>&2 echo "Remediating rule 194/236: 'audit_rules_execution_setfiles'")
 
@@ -11383,7 +10815,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_execution_setfiles'
 
 ###############################################################################
-# BEGIN fix (195 / 236) for 'audit_rules_execution_setsebool'
+# All uses of the setsebool command must be audited. (V-72137)
 ###############################################################################
 (>&2 echo "Remediating rule 195/236: 'audit_rules_execution_setsebool'")
 
@@ -11619,7 +11051,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_execution_setsebool'
 
 ###############################################################################
-# BEGIN fix (196 / 236) for 'audit_rules_execution_semanage'
+# The Red Hat Enterprise Linux operating system must prevent non-privileged users from executing privileged functions to include disabling, circumventing, or altering implemented security safeguards/countermeasures.
 ###############################################################################
 (>&2 echo "Remediating rule 196/236: 'audit_rules_execution_semanage'")
 
@@ -11855,7 +11287,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_execution_semanage'
 
 ###############################################################################
-# BEGIN fix (197 / 236) for 'audit_rules_execution_chcon'
+# All uses of the chcon command must be audited. (V-72139)
 ###############################################################################
 (>&2 echo "Remediating rule 197/236: 'audit_rules_execution_chcon'")
 
@@ -12091,7 +11523,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_execution_chcon'
 
 ###############################################################################
-# BEGIN fix (198 / 236) for 'audit_rules_file_deletion_events_rmdir'
+# All uses of the rmdir command must be audited. (V-72203)
 ###############################################################################
 (>&2 echo "Remediating rule 198/236: 'audit_rules_file_deletion_events_rmdir'")
 
@@ -12332,7 +11764,7 @@ done
 # END fix for 'audit_rules_file_deletion_events_rmdir'
 
 ###############################################################################
-# BEGIN fix (199 / 236) for 'audit_rules_file_deletion_events_unlinkat'
+# All uses of the unlink command must be audited. (V-72205)
 ###############################################################################
 (>&2 echo "Remediating rule 199/236: 'audit_rules_file_deletion_events_unlinkat'")
 
@@ -12573,7 +12005,7 @@ done
 # END fix for 'audit_rules_file_deletion_events_unlinkat'
 
 ###############################################################################
-# BEGIN fix (200 / 236) for 'audit_rules_file_deletion_events_rename'
+# All uses of the rename command must be audited. (V-72199)
 ###############################################################################
 (>&2 echo "Remediating rule 200/236: 'audit_rules_file_deletion_events_rename'")
 
@@ -12814,7 +12246,7 @@ done
 # END fix for 'audit_rules_file_deletion_events_rename'
 
 ###############################################################################
-# BEGIN fix (201 / 236) for 'audit_rules_file_deletion_events_renameat'
+# All uses of the renameat command must be audited. (V-72201)
 ###############################################################################
 (>&2 echo "Remediating rule 201/236: 'audit_rules_file_deletion_events_renameat'")
 
@@ -13055,7 +12487,7 @@ done
 # END fix for 'audit_rules_file_deletion_events_renameat'
 
 ###############################################################################
-# BEGIN fix (202 / 236) for 'audit_rules_file_deletion_events_unlink'
+# All uses of the unlink command must be audited. (V-72205)
 ###############################################################################
 (>&2 echo "Remediating rule 202/236: 'audit_rules_file_deletion_events_unlink'")
 
@@ -13296,7 +12728,7 @@ done
 # END fix for 'audit_rules_file_deletion_events_unlink'
 
 ###############################################################################
-# BEGIN fix (203 / 236) for 'audit_rules_privileged_commands_gpasswd'
+# All uses of the gpasswd command must be audited. (V-72153)
 ###############################################################################
 (>&2 echo "Remediating rule 203/236: 'audit_rules_privileged_commands_gpasswd'")
 
@@ -13532,7 +12964,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_privileged_commands_gpasswd'
 
 ###############################################################################
-# BEGIN fix (204 / 236) for 'audit_rules_privileged_commands_passwd'
+# All uses of the gpasswd command must be audited. (V-72153)
 ###############################################################################
 (>&2 echo "Remediating rule 204/236: 'audit_rules_privileged_commands_passwd'")
 
@@ -13768,7 +13200,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_privileged_commands_passwd'
 
 ###############################################################################
-# BEGIN fix (205 / 236) for 'audit_rules_privileged_commands_sudo'
+# All uses of the sudo command must be audited. (V-72161)
 ###############################################################################
 (>&2 echo "Remediating rule 205/236: 'audit_rules_privileged_commands_sudo'")
 
@@ -14004,7 +13436,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_privileged_commands_sudo'
 
 ###############################################################################
-# BEGIN fix (206 / 236) for 'audit_rules_privileged_commands_postdrop'
+# All uses of the postdrop command must be audited. (V-72175)
 ###############################################################################
 (>&2 echo "Remediating rule 206/236: 'audit_rules_privileged_commands_postdrop'")
 
@@ -14240,7 +13672,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_privileged_commands_postdrop'
 
 ###############################################################################
-# BEGIN fix (207 / 236) for 'audit_rules_privileged_commands_chsh'
+# All uses of the chsh command must be audited. (V-72167)
 ###############################################################################
 (>&2 echo "Remediating rule 207/236: 'audit_rules_privileged_commands_chsh'")
 
@@ -14476,7 +13908,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_privileged_commands_chsh'
 
 ###############################################################################
-# BEGIN fix (208 / 236) for 'audit_rules_privileged_commands_postqueue'
+# All uses of the postqueue command must be audited. (V-72177)BEGIN fix (208 / 236) for 'audit_rules_privileged_commands_postqueue'
 ###############################################################################
 (>&2 echo "Remediating rule 208/236: 'audit_rules_privileged_commands_postqueue'")
 
@@ -14712,7 +14144,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_privileged_commands_postqueue'
 
 ###############################################################################
-# BEGIN fix (209 / 236) for 'audit_rules_privileged_commands_chage'
+# The Red Hat Enterprise Linux operating system must be configured so that passwords are restricted to a 24 hours/1 day minimum lifetime.
 ###############################################################################
 (>&2 echo "Remediating rule 209/236: 'audit_rules_privileged_commands_chage'")
 
@@ -14948,7 +14380,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_privileged_commands_chage'
 
 ###############################################################################
-# BEGIN fix (210 / 236) for 'audit_rules_privileged_commands_userhelper'
+# All uses of the userhelper command must be audited. (V-72157)
 ###############################################################################
 (>&2 echo "Remediating rule 210/236: 'audit_rules_privileged_commands_userhelper'")
 
@@ -15184,7 +14616,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_privileged_commands_userhelper'
 
 ###############################################################################
-# BEGIN fix (211 / 236) for 'audit_rules_privileged_commands_pam_timestamp_check'
+# All uses of the pam_timestamp_check command must be audited. (V-72185)
 ###############################################################################
 (>&2 echo "Remediating rule 211/236: 'audit_rules_privileged_commands_pam_timestamp_check'")
 
@@ -15420,7 +14852,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_privileged_commands_pam_timestamp_check'
 
 ###############################################################################
-# BEGIN fix (212 / 236) for 'audit_rules_privileged_commands_crontab'
+# All uses of the crontab command must be audited. (V-72183)
 ###############################################################################
 (>&2 echo "Remediating rule 212/236: 'audit_rules_privileged_commands_crontab'")
 
@@ -15656,7 +15088,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_privileged_commands_crontab'
 
 ###############################################################################
-# BEGIN fix (213 / 236) for 'audit_rules_privileged_commands_umount'
+# All uses of the umount command must be audited. (V-72173)
 ###############################################################################
 (>&2 echo "Remediating rule 213/236: 'audit_rules_privileged_commands_umount'")
 
@@ -15892,7 +15324,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_privileged_commands_umount'
 
 ###############################################################################
-# BEGIN fix (214 / 236) for 'audit_rules_privileged_commands_unix_chkpwd'
+# All uses of the unix_chkpwd command must be audited. (V-72151)
 ###############################################################################
 (>&2 echo "Remediating rule 214/236: 'audit_rules_privileged_commands_unix_chkpwd'")
 
@@ -16128,7 +15560,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_privileged_commands_unix_chkpwd'
 
 ###############################################################################
-# BEGIN fix (215 / 236) for 'audit_rules_privileged_commands_ssh_keysign'
+# All uses of the ssh-keysign command must be audited. (V-72179)
 ###############################################################################
 (>&2 echo "Remediating rule 215/236: 'audit_rules_privileged_commands_ssh_keysign'")
 
@@ -16364,7 +15796,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_privileged_commands_ssh_keysign'
 
 ###############################################################################
-# BEGIN fix (216 / 236) for 'audit_rules_privileged_commands_sudoedit'
+# All uses of the sudoedit command must be audited. (V-72169)
 ###############################################################################
 (>&2 echo "Remediating rule 216/236: 'audit_rules_privileged_commands_sudoedit'")
 
@@ -16600,7 +16032,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_privileged_commands_sudoedit'
 
 ###############################################################################
-# BEGIN fix (217 / 236) for 'audit_rules_privileged_commands'
+# All uses of the mount command must be audited. (V-72171)
 ###############################################################################
 (>&2 echo "Remediating rule 217/236: 'audit_rules_privileged_commands'")
 
@@ -16794,7 +16226,7 @@ perform_audit_rules_privileged_commands_remediation "augenrules" "1000"
 # END fix for 'audit_rules_privileged_commands'
 
 ###############################################################################
-# BEGIN fix (218 / 236) for 'audit_rules_privileged_commands_su'
+# All uses of the su command must be audited. (V-72159)
 ###############################################################################
 (>&2 echo "Remediating rule 218/236: 'audit_rules_privileged_commands_su'")
 
@@ -17030,7 +16462,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_privileged_commands_su'
 
 ###############################################################################
-# BEGIN fix (219 / 236) for 'audit_rules_privileged_commands_newgrp'
+# All uses of the newgrp command must be audited. (V-72165)
 ###############################################################################
 (>&2 echo "Remediating rule 219/236: 'audit_rules_privileged_commands_newgrp'")
 
@@ -17266,7 +16698,7 @@ fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
 # END fix for 'audit_rules_privileged_commands_newgrp'
 
 ###############################################################################
-# BEGIN fix (220 / 236) for 'audit_rules_sysadmin_actions'
+# The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation.
 ###############################################################################
 (>&2 echo "Remediating rule 220/236: 'audit_rules_sysadmin_actions'")
 
@@ -17536,249 +16968,10 @@ fix_audit_watch_rule "auditctl" "/etc/sudoers.d" "wa" "actions"
 fix_audit_watch_rule "augenrules" "/etc/sudoers.d" "wa" "actions"
 # END fix for 'audit_rules_sysadmin_actions'
 
-###############################################################################
-# BEGIN fix (221 / 236) for 'audit_rules_media_export'
-###############################################################################
-(>&2 echo "Remediating rule 221/236: 'audit_rules_media_export'")
 
-
-# Perform the remediation of the syscall rule
-# Retrieve hardware architecture of the underlying system
-[ "$(getconf LONG_BIT)" = "32" ] && RULE_ARCHS=("b32") || RULE_ARCHS=("b32" "b64")
-
-for ARCH in "${RULE_ARCHS[@]}"
-do
-	PATTERN="-a always,exit -F arch=$ARCH -S .* -F auid>=1000 -F auid!=unset -k *"
-	GROUP="mount"
-	FULL_RULE="-a always,exit -F arch=$ARCH -S mount -F auid>=1000 -F auid!=unset -k export"
-	# Perform the remediation for both possible tools: 'auditctl' and 'augenrules'
-# Function to fix syscall audit rule for given system call. It is
-# based on example audit syscall rule definitions as outlined in
-# /usr/share/doc/audit-2.3.7/stig.rules file provided with the audit
-# package. It will combine multiple system calls belonging to the same
-# syscall group into one audit rule (rather than to create audit rule per
-# different system call) to avoid audit infrastructure performance penalty
-# in the case of 'one-audit-rule-definition-per-one-system-call'. See:
-#
-#   https://www.redhat.com/archives/linux-audit/2014-November/msg00009.html
-#
-# for further details.
-#
-# Expects five arguments (each of them is required) in the form of:
-# * audit tool				tool used to load audit rules,
-# 					either 'auditctl', or 'augenrules
-# * audit rules' pattern		audit rule skeleton for same syscall
-# * syscall group			greatest common string this rule shares
-# 					with other rules from the same group
-# * architecture			architecture this rule is intended for
-# * full form of new rule to add	expected full form of audit rule as to be
-# 					added into audit.rules file
-#
-# Note: The 2-th up to 4-th arguments are used to determine how many existing
-# audit rules will be inspected for resemblance with the new audit rule
-# (5-th argument) the function is going to add. The rule's similarity check
-# is performed to optimize audit.rules definition (merge syscalls of the same
-# group into one rule) to avoid the "single-syscall-per-audit-rule" performance
-# penalty.
-#
-# Example call:
-#
-#	See e.g. 'audit_rules_file_deletion_events.sh' remediation script
-#
-function fix_audit_syscall_rule {
-
-# Load function arguments into local variables
-local tool="$1"
-local pattern="$2"
-local group="$3"
-local arch="$4"
-local full_rule="$5"
-
-# Check sanity of the input
-if [ $# -ne "5" ]
-then
-	echo "Usage: fix_audit_syscall_rule 'tool' 'pattern' 'group' 'arch' 'full rule'"
-	echo "Aborting."
-	exit 1
-fi
-
-# Create a list of audit *.rules files that should be inspected for presence and correctness
-# of a particular audit rule. The scheme is as follows:
-# 
-# -----------------------------------------------------------------------------------------
-#  Tool used to load audit rules | Rule already defined  |  Audit rules file to inspect    |
-# -----------------------------------------------------------------------------------------
-#        auditctl                |     Doesn't matter    |  /etc/audit/audit.rules         |
-# -----------------------------------------------------------------------------------------
-#        augenrules              |          Yes          |  /etc/audit/rules.d/*.rules     |
-#        augenrules              |          No           |  /etc/audit/rules.d/$key.rules  |
-# -----------------------------------------------------------------------------------------
-#
-declare -a files_to_inspect
-
-retval=0
-
-# First check sanity of the specified audit tool
-if [ "$tool" != 'auditctl' ] && [ "$tool" != 'augenrules' ]
-then
-	echo "Unknown audit rules loading tool: $1. Aborting."
-	echo "Use either 'auditctl' or 'augenrules'!"
-	return 1
-# If audit tool is 'auditctl', then add '/etc/audit/audit.rules'
-# file to the list of files to be inspected
-elif [ "$tool" == 'auditctl' ]
-then
-	files_to_inspect+=('/etc/audit/audit.rules' )
-# If audit tool is 'augenrules', then check if the audit rule is defined
-# If rule is defined, add '/etc/audit/rules.d/*.rules' to the list for inspection
-# If rule isn't defined yet, add '/etc/audit/rules.d/$key.rules' to the list for inspection
-elif [ "$tool" == 'augenrules' ]
-then
-	# Extract audit $key from audit rule so we can use it later
-	key=$(expr "$full_rule" : '.*-k[[:space:]]\([^[:space:]]\+\)' '|' "$full_rule" : '.*-F[[:space:]]key=\([^[:space:]]\+\)')
-	readarray -t matches < <(sed -s -n -e "\;${pattern};!d" -e "/${arch}/!d" -e "/${group}/!d;F" /etc/audit/rules.d/*.rules)
-	if [ $? -ne 0 ]
-	then
-		retval=1
-	fi
-	for match in "${matches[@]}"
-	do
-		files_to_inspect+=("${match}")
-	done
-	# Case when particular rule isn't defined in /etc/audit/rules.d/*.rules yet
-	if [ ${#files_to_inspect[@]} -eq "0" ]
-	then
-		file_to_inspect="/etc/audit/rules.d/$key.rules"
-		files_to_inspect=("$file_to_inspect")
-		if [ ! -e "$file_to_inspect" ]
-		then
-			touch "$file_to_inspect"
-			chmod 0640 "$file_to_inspect"
-		fi
-	fi
-fi
-
-#
-# Indicator that we want to append $full_rule into $audit_file by default
-local append_expected_rule=0
-
-for audit_file in "${files_to_inspect[@]}"
-do
-	# Filter existing $audit_file rules' definitions to select those that:
-	# * follow the rule pattern, and
-	# * meet the hardware architecture requirement, and
-	# * are current syscall group specific
-	readarray -t existing_rules < <(sed -e "\;${pattern};!d" -e "/${arch}/!d" -e "/${group}/!d"  "$audit_file")
-	if [ $? -ne 0 ]
-	then
-		retval=1
-	fi
-
-	# Process rules found case-by-case
-	for rule in "${existing_rules[@]}"
-	do
-		# Found rule is for same arch & key, but differs (e.g. in count of -S arguments)
-		if [ "${rule}" != "${full_rule}" ]
-		then
-			# If so, isolate just '(-S \w)+' substring of that rule
-			rule_syscalls=$(echo $rule | grep -o -P '(-S \w+ )+')
-			# Check if list of '-S syscall' arguments of that rule is subset
-			# of '-S syscall' list of expected $full_rule
-			if grep -q -- "$rule_syscalls" <<< "$full_rule"
-			then
-				# Rule is covered (i.e. the list of -S syscalls for this rule is
-				# subset of -S syscalls of $full_rule => existing rule can be deleted
-				# Thus delete the rule from audit.rules & our array
-				sed -i -e "\;${rule};d" "$audit_file"
-				if [ $? -ne 0 ]
-				then
-					retval=1
-				fi
-				existing_rules=("${existing_rules[@]//$rule/}")
-			else
-				# Rule isn't covered by $full_rule - it besides -S syscall arguments
-				# for this group contains also -S syscall arguments for other syscall
-				# group. Example: '-S lchown -S fchmod -S fchownat' => group='chown'
-				# since 'lchown' & 'fchownat' share 'chown' substring
-				# Therefore:
-				# * 1) delete the original rule from audit.rules
-				# (original '-S lchown -S fchmod -S fchownat' rule would be deleted)
-				# * 2) delete the -S syscall arguments for this syscall group, but
-				# keep those not belonging to this syscall group
-				# (original '-S lchown -S fchmod -S fchownat' would become '-S fchmod'
-				# * 3) append the modified (filtered) rule again into audit.rules
-				# if the same rule not already present
-				#
-				# 1) Delete the original rule
-				sed -i -e "\;${rule};d" "$audit_file"
-				if [ $? -ne 0 ]
-				then
-					retval=1
-				fi
-
-				# 2) Delete syscalls for this group, but keep those from other groups
-				# Convert current rule syscall's string into array splitting by '-S' delimiter
-				IFS_BKP="$IFS"
-				IFS=$'-S'
-				read -a rule_syscalls_as_array <<< "$rule_syscalls"
-				# Reset IFS back to default
-				IFS="$IFS_BKP"
-				# Splitting by "-S" can't be replaced by the readarray functionality easily
-
-				# Declare new empty string to hold '-S syscall' arguments from other groups
-				new_syscalls_for_rule=''
-				# Walk through existing '-S syscall' arguments
-				for syscall_arg in "${rule_syscalls_as_array[@]}"
-				do
-					# Skip empty $syscall_arg values
-					if [ "$syscall_arg" == '' ]
-					then
-						continue
-					fi
-					# If the '-S syscall' doesn't belong to current group add it to the new list
-					# (together with adding '-S' delimiter back for each of such item found)
-					if grep -q -v -- "$group" <<< "$syscall_arg"
-					then
-						new_syscalls_for_rule="$new_syscalls_for_rule -S $syscall_arg"
-					fi
-				done
-				# Replace original '-S syscall' list with the new one for this rule
-				updated_rule=${rule//$rule_syscalls/$new_syscalls_for_rule}
-				# Squeeze repeated whitespace characters in rule definition (if any) into one
-				updated_rule=$(echo "$updated_rule" | tr -s '[:space:]')
-				# 3) Append the modified / filtered rule again into audit.rules
-				#    (but only in case it's not present yet to prevent duplicate definitions)
-				if ! grep -q -- "$updated_rule" "$audit_file"
-				then
-					echo "$updated_rule" >> "$audit_file"
-				fi
-			fi
-		else
-			# $audit_file already contains the expected rule form for this
-			# architecture & key => don't insert it second time
-			append_expected_rule=1
-		fi
-	done
-
-	# We deleted all rules that were subset of the expected one for this arch & key.
-	# Also isolated rules containing system calls not from this system calls group.
-	# Now append the expected rule if it's not present in $audit_file yet
-	if [[ ${append_expected_rule} -eq "0" ]]
-	then
-		echo "$full_rule" >> "$audit_file"
-	fi
-done
-
-return $retval
-
-}
-	fix_audit_syscall_rule "auditctl" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
-	fix_audit_syscall_rule "augenrules" "$PATTERN" "$GROUP" "$ARCH" "$FULL_RULE"
-done
-# END fix for 'audit_rules_media_export'
 
 ###############################################################################
-# BEGIN fix (222 / 236) for 'audit_rules_usergroup_modification_shadow'
+# The shadow file must be configured to store only encrypted representations of passwords. (V-71921)
 ###############################################################################
 (>&2 echo "Remediating rule 222/236: 'audit_rules_usergroup_modification_shadow'")
 
@@ -17918,7 +17111,7 @@ fix_audit_watch_rule "augenrules" "/etc/shadow" "wa" "audit_rules_usergroup_modi
 # END fix for 'audit_rules_usergroup_modification_shadow'
 
 ###############################################################################
-# BEGIN fix (223 / 236) for 'audit_rules_usergroup_modification_opasswd'
+# The operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/opasswd. (V-73173)
 ###############################################################################
 (>&2 echo "Remediating rule 223/236: 'audit_rules_usergroup_modification_opasswd'")
 
@@ -18085,7 +17278,7 @@ done
 # END fix for 'audit_rules_system_shutdown'
 
 ###############################################################################
-# BEGIN fix (225 / 236) for 'audit_rules_usergroup_modification_gshadow'
+# The operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/gshadow. (V-73167)
 ###############################################################################
 (>&2 echo "Remediating rule 225/236: 'audit_rules_usergroup_modification_gshadow'")
 
@@ -18225,7 +17418,7 @@ fix_audit_watch_rule "augenrules" "/etc/gshadow" "wa" "audit_rules_usergroup_mod
 # END fix for 'audit_rules_usergroup_modification_gshadow'
 
 ###############################################################################
-# BEGIN fix (226 / 236) for 'audit_rules_usergroup_modification_passwd'
+# The operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/opasswd. (V-73173)
 ###############################################################################
 (>&2 echo "Remediating rule 226/236: 'audit_rules_usergroup_modification_passwd'")
 
@@ -18365,7 +17558,7 @@ fix_audit_watch_rule "augenrules" "/etc/passwd" "wa" "audit_rules_usergroup_modi
 # END fix for 'audit_rules_usergroup_modification_passwd'
 
 ###############################################################################
-# BEGIN fix (227 / 236) for 'audit_rules_usergroup_modification_group'
+# The Red Hat Enterprise Linux operating system must be configured so that all Group Identifiers (GIDs) referenced in the /etc/passwd file are defined in the /etc/group file.
 ###############################################################################
 (>&2 echo "Remediating rule 227/236: 'audit_rules_usergroup_modification_group'")
 
@@ -18505,7 +17698,7 @@ fix_audit_watch_rule "augenrules" "/etc/group" "wa" "audit_rules_usergroup_modif
 # END fix for 'audit_rules_usergroup_modification_group'
 
 ###############################################################################
-# BEGIN fix (228 / 236) for 'service_auditd_enabled'
+# Auditd must be downloaded and enabled (V-38632)
 ###############################################################################
 (>&2 echo "Remediating rule 228/236: 'service_auditd_enabled'")
 
@@ -18514,29 +17707,10 @@ SYSTEMCTL_EXEC='/usr/bin/systemctl'
 "$SYSTEMCTL_EXEC" enable 'auditd.service'
 # END fix for 'service_auditd_enabled'
 
-###############################################################################
-# BEGIN fix (229 / 236) for 'dir_perms_world_writable_system_owned'
-###############################################################################
-(>&2 echo "Remediating rule 229/236: 'dir_perms_world_writable_system_owned'")
-(>&2 echo "FIX FOR THIS RULE 'dir_perms_world_writable_system_owned' IS MISSING!")
-# END fix for 'dir_perms_world_writable_system_owned'
+
 
 ###############################################################################
-# BEGIN fix (230 / 236) for 'file_permissions_ungroupowned'
-###############################################################################
-(>&2 echo "Remediating rule 230/236: 'file_permissions_ungroupowned'")
-(>&2 echo "FIX FOR THIS RULE 'file_permissions_ungroupowned' IS MISSING!")
-# END fix for 'file_permissions_ungroupowned'
-
-###############################################################################
-# BEGIN fix (231 / 236) for 'no_files_unowned_by_user'
-###############################################################################
-(>&2 echo "Remediating rule 231/236: 'no_files_unowned_by_user'")
-(>&2 echo "FIX FOR THIS RULE 'no_files_unowned_by_user' IS MISSING!")
-# END fix for 'no_files_unowned_by_user'
-
-###############################################################################
-# BEGIN fix (232 / 236) for 'kernel_module_usb-storage_disabled'
+# The Red Hat Enterprise Linux operating system must be configured to disable USB mass storage.
 ###############################################################################
 (>&2 echo "Remediating rule 232/236: 'kernel_module_usb-storage_disabled'")
 if LC_ALL=C grep -q -m 1 "^install usb-storage" /etc/modprobe.d/usb-storage.conf ; then
@@ -18548,7 +17722,7 @@ fi
 # END fix for 'kernel_module_usb-storage_disabled'
 
 ###############################################################################
-# BEGIN fix (233 / 236) for 'service_autofs_disabled'
+# The Red Hat Enterprise Linux operating system must disable the file system automounter unless required.
 ###############################################################################
 (>&2 echo "Remediating rule 233/236: 'service_autofs_disabled'")
 
@@ -18569,103 +17743,9 @@ fi
 "$SYSTEMCTL_EXEC" reset-failed 'autofs.service' || true
 # END fix for 'service_autofs_disabled'
 
-###############################################################################
-# BEGIN fix (234 / 236) for 'sysctl_kernel_randomize_va_space'
-###############################################################################
-(>&2 echo "Remediating rule 234/236: 'sysctl_kernel_randomize_va_space'")
-
-
-#
-# Set runtime for kernel.randomize_va_space
-#
-/sbin/sysctl -q -n -w kernel.randomize_va_space=2
-
-#
-# If kernel.randomize_va_space present in /etc/sysctl.conf, change value to "2"
-#	else, add "kernel.randomize_va_space = 2" to /etc/sysctl.conf
-#
-# Function to replace configuration setting in config file or add the configuration setting if
-# it does not exist.
-#
-# Expects arguments:
-#
-# config_file:		Configuration file that will be modified
-# key:			Configuration option to change
-# value:		Value of the configuration option to change
-# cce:			The CCE identifier or '@CCENUM@' if no CCE identifier exists
-# format:		The printf-like format string that will be given stripped key and value as arguments,
-#			so e.g. '%s=%s' will result in key=value subsitution (i.e. without spaces around =)
-#
-# Optional arugments:
-#
-# format:		Optional argument to specify the format of how key/value should be
-# 			modified/appended in the configuration file. The default is key = value.
-#
-# Example Call(s):
-#
-#     With default format of 'key = value':
-#     replace_or_append '/etc/sysctl.conf' '^kernel.randomize_va_space' '2' '@CCENUM@'
-#
-#     With custom key/value format:
-#     replace_or_append '/etc/sysconfig/selinux' '^SELINUX=' 'disabled' '@CCENUM@' '%s=%s'
-#
-#     With a variable:
-#     replace_or_append '/etc/sysconfig/selinux' '^SELINUX=' $var_selinux_state '@CCENUM@' '%s=%s'
-#
-function replace_or_append {
-  local default_format='%s = %s' case_insensitive_mode=yes sed_case_insensitive_option='' grep_case_insensitive_option=''
-  local config_file=$1
-  local key=$2
-  local value=$3
-  local cce=$4
-  local format=$5
-
-  if [ "$case_insensitive_mode" = yes ]; then
-    sed_case_insensitive_option="i"
-    grep_case_insensitive_option="-i"
-  fi
-  [ -n "$format" ] || format="$default_format"
-  # Check sanity of the input
-  [ $# -ge "3" ] || { echo "Usage: replace_or_append <config_file_location> <key_to_search> <new_value> [<CCE number or literal '@CCENUM@' if unknown>] [printf-like format, default is '$default_format']" >&2; exit 1; }
-
-  # Test if the config_file is a symbolic link. If so, use --follow-symlinks with sed.
-  # Otherwise, regular sed command will do.
-  sed_command=('sed' '-i')
-  if test -L "$config_file"; then
-    sed_command+=('--follow-symlinks')
-  fi
-
-  # Test that the cce arg is not empty or does not equal @CCENUM@.
-  # If @CCENUM@ exists, it means that there is no CCE assigned.
-  if [ -n "$cce" ] && [ "$cce" != '@CCENUM@' ]; then
-    cce="${cce}"
-  else
-    cce="CCE"
-  fi
-
-  # Strip any search characters in the key arg so that the key can be replaced without
-  # adding any search characters to the config file.
-  stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "$key")
-
-  # shellcheck disable=SC2059
-  printf -v formatted_output "$format" "$stripped_key" "$value"
-
-  # If the key exists, change it. Otherwise, add it to the config_file.
-  # We search for the key string followed by a word boundary (matched by \>),
-  # so if we search for 'setting', 'setting2' won't match.
-  if LC_ALL=C grep -q -m 1 $grep_case_insensitive_option -e "${key}\\>" "$config_file"; then
-    "${sed_command[@]}" "s/${key}\\>.*/$formatted_output/g$sed_case_insensitive_option" "$config_file"
-  else
-    # \n is precaution for case where file ends without trailing newline
-    printf '\n# Per %s: Set %s in %s\n' "$cce" "$formatted_output" "$config_file" >> "$config_file"
-    printf '%s\n' "$formatted_output" >> "$config_file"
-  fi
-}
-replace_or_append '/etc/sysctl.conf' '^kernel.randomize_va_space' "2" 'CCE-27127-0'
-# END fix for 'sysctl_kernel_randomize_va_space'
 
 ###############################################################################
-# BEGIN fix (235 / 236) for 'mount_option_home_nosuid'
+# File systems that contain user home directories must be mounted to prevent files with the setuid and setgid bit set from being executed. (V-72041)
 ###############################################################################
 (>&2 echo "Remediating rule 235/236: 'mount_option_home_nosuid'")
 function include_mount_options_functions {
@@ -18757,7 +17837,7 @@ perform_remediation
 # END fix for 'mount_option_home_nosuid'
 
 ###############################################################################
-# BEGIN fix (236 / 236) for 'mount_option_nosuid_removable_partitions'
+# File systems that are used with removable media must be mounted to prevent files with the setuid and setgid bit set from being executed. (V-72043)
 ###############################################################################
 (>&2 echo "Remediating rule 236/236: 'mount_option_nosuid_removable_partitions'")
 
@@ -18850,3 +17930,10 @@ function perform_remediation {
 perform_remediation
 # END fix for 'mount_option_nosuid_removable_partitions'
 
+
+###############################################################################
+#The Red Hat Enterprise Linux operating system must have the screen package installed.
+###############################################################################
+
+# Install Screen package 
+yum install -y tmux && yum install -y screen
